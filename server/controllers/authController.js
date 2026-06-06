@@ -58,6 +58,7 @@ exports.loginUser = async (req, res) => {
       expiresIn: "7d",
     });
 
+    console.log(req.headers.authourization);
     res.status(200).json({
       status: "success",
       message: "Login successful",
@@ -69,4 +70,11 @@ exports.loginUser = async (req, res) => {
       message: err.message,
     });
   }
+};
+
+exports.getMe = async (req, res) => {
+  res.status(200).json({
+    status: "success",
+    user: req.user,
+  });
 };
