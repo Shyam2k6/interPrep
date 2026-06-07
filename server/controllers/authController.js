@@ -58,7 +58,6 @@ exports.loginUser = async (req, res) => {
       expiresIn: "7d",
     });
 
-    console.log(req.headers.authourization);
     res.status(200).json({
       status: "success",
       message: "Login successful",
