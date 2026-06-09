@@ -70,3 +70,38 @@ exports.deleteGoal = async (req, res) => {
     });
   }
 };
+
+exports.updateGoal = async (req, res) => {
+  try {
+    const goal = await Goal.findById(req.params.id);
+
+    if (!goal) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Goal not found",
+      });
+    }
+
+    if (goal.user.toString() !== req.user.id.toString()) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Not Authorized",
+      });
+    }
+
+    goal.title = req.body.title || goal.title;
+    await goal.save();
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        goal,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+};
