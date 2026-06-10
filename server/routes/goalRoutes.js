@@ -7,6 +7,7 @@ const controllers = require("../controllers/goalController");
 router
   .post("/", protect, controllers.createGoal)
   .get("/", protect, controllers.getGoals)
+  .get("/stats", protect, controllers.getGoalStats)
   .delete("/:id", protect, controllers.deleteGoal)
   .patch("/:id", protect, controllers.updateGoal);
 

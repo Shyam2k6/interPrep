@@ -117,3 +117,35 @@ exports.updateGoal = async (req, res) => {
     });
   }
 };
+
+exports.getGoalStats = async (req, res) => {
+  try {
+    const goals = await Goal.find({ user: req.user._id });
+
+    const totalGoals = goals.length;
+    const completedGoals = goals.filter(
+      (goal) => goal.status === "completed",
+    ).length;
+    const pendingGpals = goals.filter(
+      (goal) => goal.status === "pending",
+    ).length;
+    const inProgressGoals = goals.filter(
+      (goal) => goal.status === "in-progress",
+    ).length;
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        totalGoals,
+        inProgressGoals,
+        pendingGpals,
+        completedGoals,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+};
