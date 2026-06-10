@@ -90,6 +90,18 @@ exports.updateGoal = async (req, res) => {
     }
 
     goal.title = req.body.title || goal.title;
+
+    if (req.body.status) {
+      goal.status = req.body.status;
+    }
+
+    if (req.body.status !== undefined) {
+      goal.progress = req.body.progress;
+    }
+
+    if (goal.progress === 100) {
+      goal.status = "completed";
+    }
     await goal.save();
 
     res.status(200).json({

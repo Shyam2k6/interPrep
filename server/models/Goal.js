@@ -6,6 +6,17 @@ const goalSchema = new mongoose.Schema(
       type: String,
       required: [true, "Goal title is required"],
     },
+    status: {
+      type: String,
+      enum: ["pending", "in-progress", "completed"],
+      default: "pending",
+    },
+    progress: {
+      type: Number,
+      min: 0,
+      max: 100,
+      default: 0,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
