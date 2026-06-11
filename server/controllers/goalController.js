@@ -57,6 +57,7 @@ exports.deleteGoal = async (req, res) => {
         message: "Not Authorized",
       });
     }
+
     await Goal.deleteOne();
 
     res.status(200).json({
@@ -102,6 +103,7 @@ exports.updateGoal = async (req, res) => {
     if (goal.progress === 100) {
       goal.status = "completed";
     }
+
     await goal.save();
 
     res.status(200).json({
@@ -123,12 +125,15 @@ exports.getGoalStats = async (req, res) => {
     const goals = await Goal.find({ user: req.user._id });
 
     const totalGoals = goals.length;
+
     const completedGoals = goals.filter(
       (goal) => goal.status === "completed",
     ).length;
-    const pendingGpals = goals.filter(
+
+    const pendingGoals = goals.filter(
       (goal) => goal.status === "pending",
     ).length;
+
     const inProgressGoals = goals.filter(
       (goal) => goal.status === "in-progress",
     ).length;
@@ -138,7 +143,7 @@ exports.getGoalStats = async (req, res) => {
       data: {
         totalGoals,
         inProgressGoals,
-        pendingGpals,
+        pendingGoals,
         completedGoals,
       },
     });
