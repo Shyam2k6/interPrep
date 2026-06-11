@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const User = require("./models/User");
 const authRoutes = require("./routes/authRoutes");
 const goalRoutes = require("./routes/goalRoutes");
+const roadmapRoutes = require("./routes/roadmapRoutes");
 
 dotenv.config();
 connectDB();
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/goals", goalRoutes);
+app.use("/api/roadmaps", roadmapRoutes);
 
 const PORT = process.env.PORT || 5000;
 
