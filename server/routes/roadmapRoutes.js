@@ -1,8 +1,10 @@
 const express = require("express");
 const { protect } = require("../middleware/authMiddleware");
-const { createRoadmap } = require("../controllers/roadmapController");
+const controllers = require("../controllers/roadmapController");
 const router = express.Router();
 
-router.post("/", protect, createRoadmap);
+router
+  .get("/", protect, controllers.getRoadmaps)
+  .post("/", protect, controllers.createRoadmap);
 
 module.exports = router;

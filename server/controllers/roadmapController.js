@@ -20,7 +20,24 @@ exports.createRoadmap = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       status: "fail",
-      message: ree.message,
+      message: err.message,
+    });
+  }
+};
+
+exports.getRoadmaps = async (req, res) => {
+  try {
+    const roadmaps = await Roadmap.find({ user: req.user._id });
+
+    res.status(200).json({
+      status: "success",
+      results: roadmaps.length,
+      data: { roadmaps },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "fail",
+      message: err.message,
     });
   }
 };
