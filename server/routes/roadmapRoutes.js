@@ -5,6 +5,7 @@ const router = express.Router();
 
 router
   .get("/", protect, controllers.getRoadmaps)
-  .post("/", protect, controllers.createRoadmap);
+  .post("/", protect, controllers.createRoadmap)
+  .patch("/:roadmapId/steps/:stepId", protect, controllers.completeStep);
 
 module.exports = router;
