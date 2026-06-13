@@ -71,6 +71,14 @@ exports.completeStep = async (req, res) => {
 
     step.completed = true;
 
+    const completedSteps = roadmap.steps.filter(
+      (step) => step.completed,
+    ).length;
+
+    roadmap.progress = Math.round(
+      (completedSteps / roadmap.steps.length) * 100,
+    );
+
     await roadmap.save();
 
     res.status(200).json({

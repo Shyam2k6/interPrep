@@ -11,6 +11,10 @@ const roadmapSchema = new mongoose.Schema(
       required: true,
       default: "",
     },
+    progress: {
+      type: Number,
+      default: 0,
+    },
     steps: [
       {
         title: {
