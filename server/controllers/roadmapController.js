@@ -1,94 +1,73 @@
 const Roadmap = require("../models/Roadmap");
+const asyncHandler = require("../utils/asyncHandler");
 
-exports.createRoadmap = async (req, res) => {
-  try {
-    const { title, description, steps } = req.body;
-    console.log(req.body);
-    const roadmap = await Roadmap.create({
-      title,
-      description,
-      steps,
-      user: req.user._id,
-    });
+exports.createRoadmap = asyncHandler(async (req, res) => {
+  const { title, description, steps } = req.body;
 
-    res.status(201).json({
-      status: "success",
-      data: {
-        roadmap,
-      },
-    });
-  } catch (err) {
-    res.status(500).json({
+  const roadmap = await Roadmap.create({
+    title,
+    description,
+    steps,
+    user: req.user._id,
+  });
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      roadmap,
+    },
+  });
+});
+
+exports.getRoadmaps = asyncHandler(async (req, res) => {
+  const roadmaps = await Roadmap.find({ user: req.user._id }).populate(
+    "user",
+    "name email",
+  );
+
+  res.status(200).json({
+    status: "success",
+    results: roadmaps.length,
+    data: { roadmaps },
+  });
+});
+
+exports.completeStep = asyncHandler(async (req, res) => {
+  const roadmap = await Roadmap.findById(req.params.roadmapId);
+
+  if (!roadmap) {
+    const error = new Error("Roadmap not Found");
+    error.statusCode = 404;
+
+    throw error;
+  }
+
+  if (roadmap.user.toString() !== req.user._id.toString()) {
+    return res.status(401).json({
       status: "fail",
-      message: err.message,
+      message: "Not authorized",
     });
   }
-};
 
-exports.getRoadmaps = async (req, res) => {
-  try {
-    const roadmaps = await Roadmap.find({ user: req.user._id });
+  const step = roadmap.steps.id(req.params.stepId);
 
-    res.status(200).json({
-      status: "success",
-      results: roadmaps.length,
-      data: { roadmaps },
-    });
-  } catch (err) {
-    res.status(500).json({
+  if (!step) {
+    return res.status(404).json({
       status: "fail",
-      message: err.message,
+      message: "Step not found",
     });
   }
-};
 
-exports.completeStep = async (req, res) => {
-  try {
-    const roadmap = await Roadmap.findById(req.params.roadmapId);
+  step.completed = true;
 
-    if (!roadmap) {
-      return res.status(404).json({
-        status: "fail",
-        message: "Roadmap not found",
-      });
-    }
+  const completedSteps = roadmap.steps.filter((step) => step.completed).length;
 
-    if (roadmap.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({
-        status: "fail",
-        message: "Not authorized",
-      });
-    }
+  roadmap.progress = Math.round((completedSteps / roadmap.steps.length) * 100);
 
-    const step = roadmap.steps.id(req.params.stepId);
+  await roadmap.save();
 
-    if (!step) {
-      return res.status(404).json({
-        status: "fail",
-        message: "Step not found",
-      });
-    }
-
-    step.completed = true;
-
-    const completedSteps = roadmap.steps.filter(
-      (step) => step.completed,
-    ).length;
-
-    roadmap.progress = Math.round(
-      (completedSteps / roadmap.steps.length) * 100,
-    );
-
-    await roadmap.save();
-
-    res.status(200).json({
-      status: "success",
-      data: roadmap,
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-};
+  res.status(200).json({
+    status: "success",
+    data: roadmap,
+  });
+});

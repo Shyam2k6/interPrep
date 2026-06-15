@@ -24,7 +24,10 @@ exports.createGoal = async (req, res) => {
 
 exports.getGoals = async (req, res) => {
   try {
-    const goal = await Goal.find({ user: req.user._id });
+    const goal = await Goal.find({ user: req.user._id }).populate(
+      "user",
+      "name email",
+    );
 
     res.status(200).json({
       status: "success",
