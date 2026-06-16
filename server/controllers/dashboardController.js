@@ -27,6 +27,7 @@ exports.getDashboard = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
+    message: "Dashboard data fetched successfully",
     data: {
       totalGoals,
       completedGoals,

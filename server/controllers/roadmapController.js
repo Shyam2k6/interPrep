@@ -13,6 +13,7 @@ exports.createRoadmap = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     status: "success",
+    message: "Roadmap created successfully",
     data: {
       roadmap,
     },
@@ -27,6 +28,7 @@ exports.getRoadmaps = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
+    message: "Roadmaps fetched successfully",
     results: roadmaps.length,
     data: { roadmaps },
   });
@@ -68,6 +70,7 @@ exports.completeStep = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
+    message: "Step successfully completed",
     data: roadmap,
   });
 });

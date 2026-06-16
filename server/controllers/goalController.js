@@ -10,6 +10,7 @@ exports.createGoal = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     status: "success",
+    message: "User registered successfully",
     data: {
       goal,
     },
@@ -24,6 +25,7 @@ exports.getGoals = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
+    message: "Goals fetched successfully",
     results: goal.length,
     data: {
       goal,
@@ -90,6 +92,7 @@ exports.updateGoal = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
+    message: "Goal updated successfully",
     data: {
       goal,
     },
@@ -113,6 +116,7 @@ exports.getGoalStats = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
+    message: "Goal stats fetched succcessfully",
     data: {
       totalGoals,
       inProgressGoals,
