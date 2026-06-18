@@ -1,0 +1,17 @@
+.home {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.home h1 {
+  margin-bottom: 20px;
+}
+
+.home h2 {
+  margin-bottom: 10px;
+}
+
+.home button {
+  margin-top: 20px;
+  padding: 10px 20px;
+}
