@@ -4,6 +4,7 @@ import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import PublicLayout from "../layouts/PublicLayout";
+import DashboardPage from "../pages/DashboardPage";
 
 function AppRoutes() {
   return (
@@ -29,6 +30,14 @@ function AppRoutes() {
         element={
           <PublicLayout>
             <RegisterPage />
+          </PublicLayout>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <PublicLayout>
+            <DashboardPage />
           </PublicLayout>
         }
       />

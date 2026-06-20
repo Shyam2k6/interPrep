@@ -1,17 +1,60 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../services/authService";
 import "../styles/auth.css";
 
 function LoginPage() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const data = await loginUser(formData);
+      console.log("Response:", data);
+
+      localStorage.setItem("token", data.token);
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error.response?.data);
+    }
+  };
+
   return (
     <div className="auth-container">
-      <form className="auth-form">
+      <form className="auth-form" onSubmit={handleSubmit}>
         <h1>Login</h1>
 
-        <input type="email" placeholder="Email" />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+        />
 
-        <input type="password" placeholder="Password" />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
 
-        <button type="submit">Login</button>
+        <button>Login</button>
 
         <p>
           Don't have an account? <Link to="/register">Register</Link>
