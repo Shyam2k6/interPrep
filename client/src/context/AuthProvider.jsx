@@ -14,8 +14,6 @@ function AuthProvider({ children }) {
 
         const data = await getCurrentUser(token);
 
-        console.log("ME RESPONSE", data);
-
         setUser(data.user);
       } catch (error) {
         console.log(error);

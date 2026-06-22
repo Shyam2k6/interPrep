@@ -7,11 +7,9 @@ function DashboardPage() {
 
   return (
     <>
-      <h1>Dashboard</h1>
+      <h1>Welcome back, {user?.name} 👋</h1>
 
-      <h2>Welcome {user?.name}</h2>
-
-      <p>{user?.email}</p>
+      <p>Ready to continue your learning journey?</p>
     </>
   );
 }
