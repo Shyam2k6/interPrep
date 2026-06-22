@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../services/authService";
 import "../styles/auth.css";
+import { useAuth } from "../hooks/useAuth";
 
 function LoginPage() {
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -25,7 +27,8 @@ function LoginPage() {
       const data = await loginUser(formData);
       console.log("Response:", data);
 
-      localStorage.setItem("token", data.token);
+      // localStorage.setItem("token", data.token);
+      login(data.token);
 
       navigate("/dashboard");
     } catch (error) {
