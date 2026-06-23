@@ -6,6 +6,7 @@ import RegisterPage from "../pages/RegisterPage";
 import PublicLayout from "../layouts/PublicLayout";
 import DashboardPage from "../pages/DashboardPage";
 import DashboardLayout from "../layouts/DashboardLayout";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 function AppRoutes() {
   return (
@@ -37,9 +38,11 @@ function AppRoutes() {
       <Route
         path="/dashboard"
         element={
-          <DashboardLayout>
-            <DashboardPage />
-          </DashboardLayout>
+          <ProtectedRoute>
+            <DashboardLayout>
+              <DashboardPage />
+            </DashboardLayout>
+          </ProtectedRoute>
         }
       />
     </Routes>
