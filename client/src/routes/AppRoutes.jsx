@@ -7,6 +7,7 @@ import PublicLayout from "../layouts/PublicLayout";
 import DashboardPage from "../pages/DashboardPage";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProtectedRoute from "../components/ProtectedRoute";
+import PublicRoute from "../components/PublicRoute";
 
 function AppRoutes() {
   return (
@@ -22,17 +23,21 @@ function AppRoutes() {
       <Route
         path="/login"
         element={
-          <PublicLayout>
-            <LoginPage />
-          </PublicLayout>
+          <PublicRoute>
+            <PublicLayout>
+              <LoginPage />
+            </PublicLayout>
+          </PublicRoute>
         }
       />
       <Route
         path="/register"
         element={
-          <PublicLayout>
-            <RegisterPage />
-          </PublicLayout>
+          <PublicRoute>
+            <PublicLayout>
+              <RegisterPage />
+            </PublicLayout>
+          </PublicRoute>
         }
       />
       <Route
