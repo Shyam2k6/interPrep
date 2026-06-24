@@ -8,6 +8,7 @@ import DashboardPage from "../pages/DashboardPage";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProtectedRoute from "../components/ProtectedRoute";
 import PublicRoute from "../components/PublicRoute";
+import GoalsPage from "../pages/GoalsPage";
 
 function AppRoutes() {
   return (
@@ -46,6 +47,16 @@ function AppRoutes() {
           <ProtectedRoute>
             <DashboardLayout>
               <DashboardPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/goals"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <GoalsPage />
             </DashboardLayout>
           </ProtectedRoute>
         }
