@@ -19,3 +19,23 @@ export const createGoal = async (goalData, token) => {
 
   return response.data;
 };
+
+export const deleteGoal = async (goalId, token) => {
+  const response = await api.delete(`/goals/${goalId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+export const updateGoal = async (goalId, goalData, token) => {
+  const response = await api.patch(`/goals/${goalId}`, goalData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
