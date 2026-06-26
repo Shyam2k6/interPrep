@@ -9,6 +9,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import ProtectedRoute from "../components/ProtectedRoute";
 import PublicRoute from "../components/PublicRoute";
 import GoalsPage from "../pages/GoalsPage";
+import RoadmapsPage from "../pages/RoadmapsPage";
 
 function AppRoutes() {
   return (
@@ -57,6 +58,16 @@ function AppRoutes() {
           <ProtectedRoute>
             <DashboardLayout>
               <GoalsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/roadmaps"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <RoadmapsPage />
             </DashboardLayout>
           </ProtectedRoute>
         }
