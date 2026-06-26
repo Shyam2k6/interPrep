@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { getRoadmaps } from "../services/roadmapService";
+import RoadmapCard from "../components/RoadmapCard";
 
 function RoadmapsPage() {
   const [roadmaps, setRoadmaps] = useState([]);
@@ -30,11 +31,7 @@ function RoadmapsPage() {
       <h1>My Roadmaps</h1>
 
       {roadmaps.map((roadmap) => (
-        <div key={roadmap._id}>
-          <h2>{roadmap.title}</h2>
-
-          <p>Progress: {roadmap.progress}%</p>
-        </div>
+        <RoadmapCard key={roadmap._id} roadmap={roadmap} />
       ))}
     </div>
   );
