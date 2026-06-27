@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { getRoadmaps } from "../services/roadmapService";
 import RoadmapCard from "../components/RoadmapCard";
+import RoadmapForm from "../components/RoadmapForm";
 
 function RoadmapsPage() {
   const [roadmaps, setRoadmaps] = useState([]);
@@ -29,6 +30,8 @@ function RoadmapsPage() {
   return (
     <div>
       <h1>My Roadmaps</h1>
+
+      <RoadmapForm />
 
       {roadmaps.map((roadmap) => (
         <RoadmapCard key={roadmap._id} roadmap={roadmap} />
