@@ -9,3 +9,13 @@ export const getRoadmaps = async (token) => {
 
   return response.data;
 };
+
+export const createRoadmap = async (roadmapData, token) => {
+  const response = await api.post("/roadmaps", roadmapData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};

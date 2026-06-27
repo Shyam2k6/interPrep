@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function RoadmapForm() {
+function RoadmapForm({ onAddRoadmap }) {
   const [title, setTitle] = useState("");
 
   const [steps, setSteps] = useState([
@@ -22,13 +22,28 @@ function RoadmapForm() {
     const updatedSteps = [...steps];
 
     updatedSteps[index].title = value;
-
     setSteps(updatedSteps);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    onAddRoadmap({
+      title,
+      steps,
+    });
+
+    setTitle("");
+    setSteps([
+      {
+        title: "",
+      },
+    ]);
   };
 
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Roadmap Title"

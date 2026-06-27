@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { getRoadmaps } from "../services/roadmapService";
+import { getRoadmaps, createRoadmap } from "../services/roadmapService";
 import RoadmapCard from "../components/RoadmapCard";
 import RoadmapForm from "../components/RoadmapForm";
 
@@ -16,8 +16,6 @@ function RoadmapsPage() {
       try {
         const data = await getRoadmaps(token);
 
-        console.log(data);
-
         setRoadmaps(data.data.roadmaps);
       } catch (error) {
         console.log(error);
@@ -27,11 +25,22 @@ function RoadmapsPage() {
     fetchRoadmaps();
   }, [token]);
 
+  const handleAddRoadmap = async (roadmapData) => {
+    try {
+      console.log(roadmapData);
+      const data = await createRoadmap(roadmapData, token);
+
+      setRoadmaps((prev) => [...prev, data.data.roadmap]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <h1>My Roadmaps</h1>
 
-      <RoadmapForm />
+      <RoadmapForm onAddRoadmap={handleAddRoadmap} />
 
       {roadmaps.map((roadmap) => (
         <RoadmapCard key={roadmap._id} roadmap={roadmap} />
