@@ -19,3 +19,17 @@ export const createRoadmap = async (roadmapData, token) => {
 
   return response.data;
 };
+
+export const toggleStep = async (roadmapId, stepId, token) => {
+  const response = await api.patch(
+    `/roadmaps/${roadmapId}/steps/${stepId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  return response.data;
+};

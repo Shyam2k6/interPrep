@@ -71,6 +71,8 @@ exports.completeStep = asyncHandler(async (req, res) => {
   res.status(200).json({
     status: "success",
     message: "Step successfully completed",
-    data: roadmap,
+    data: {
+      roadmap,
+    },
   });
 });
