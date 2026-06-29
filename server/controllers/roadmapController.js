@@ -76,3 +76,24 @@ exports.completeStep = asyncHandler(async (req, res) => {
     },
   });
 });
+
+exports.deleteRoadmap = asyncHandler(async (req, res) => {
+  const roadmap = await Roadmap.findById(req.params.id);
+
+  if (!roadmap) {
+    res.status(404);
+    throw new Error("Roadmap not found");
+  }
+
+  if (roadmap.user.toString() !== req.user._id.toString()) {
+    res.status(403);
+    throw new Error("Not authorized");
+  }
+
+  await roadmap.deleteOne();
+
+  res.status(200).json({
+    status: "success",
+    message: "Roadmap deleted successfully",
+  });
+});
