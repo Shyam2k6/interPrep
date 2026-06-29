@@ -4,6 +4,7 @@ import {
   getRoadmaps,
   createRoadmap,
   toggleStep,
+  deleteRoadmap,
 } from "../services/roadmapService";
 import RoadmapCard from "../components/RoadmapCard";
 import RoadmapForm from "../components/RoadmapForm";
@@ -43,12 +44,22 @@ function RoadmapsPage() {
     try {
       const data = await toggleStep(roadmapId, stepId, token);
 
-      console.log(data);
-
       setRoadmaps((prev) =>
         prev.map((roadmap) =>
           roadmap._id === roadmapId ? data.data.roadmap : roadmap,
         ),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteRoadmap = async (roadmapId) => {
+    try {
+      await deleteRoadmap(roadmapId, token);
+
+      setRoadmaps((prev) =>
+        prev.filter((roadmap) => roadmap._id !== roadmapId),
       );
     } catch (error) {
       console.log(error);
@@ -66,6 +77,7 @@ function RoadmapsPage() {
           key={roadmap._id}
           roadmap={roadmap}
           onToggleStep={handleToggleStep}
+          onDelete={handleDeleteRoadmap}
         />
       ))}
     </div>

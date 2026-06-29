@@ -33,3 +33,13 @@ export const toggleStep = async (roadmapId, stepId, token) => {
 
   return response.data;
 };
+
+export const deleteRoadmap = async (roadmapId, token) => {
+  const response = await api.delete(`/roadmaps/${roadmapId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};

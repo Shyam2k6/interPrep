@@ -1,4 +1,4 @@
-function RoadmapCard({ roadmap, onToggleStep }) {
+function RoadmapCard({ roadmap, onToggleStep, onDelete }) {
   return (
     <div className="roadmap-card">
       <h2>{roadmap.title}</h2>
@@ -16,6 +16,7 @@ function RoadmapCard({ roadmap, onToggleStep }) {
           <span>{step.title}</span>
         </div>
       ))}
+      <button onClick={() => onDelete(roadmap._id)}>Delete Roadmap</button>
     </div>
   );
 }
