@@ -1,16 +1,50 @@
+import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { getDashboard } from "../services/dashboardService";
 
 function DashboardPage() {
-  const { user, loading } = useAuth();
+  const [stats, setStats] = useState(null);
+  const { user, token, loading } = useAuth();
+
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchDashboard = async () => {
+      try {
+        const data = await getDashboard(token);
+
+        console.log(data);
+
+        setStats(data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchDashboard();
+  }, [token]);
 
   if (loading) return <h1>Loading...</h1>;
+  if (!stats) return <h2>Loading...</h2>;
 
   return (
-    <>
-      <h1>Welcome back, {user?.name} 👋</h1>
+    <div className="stats">
+      <h1>Welcome, {user?.name} 👋</h1>
+      <p>{user?.email}</p>
 
-      <p>Ready to continue your learning journey?</p>
-    </>
+      <hr />
+      <h3>Total Goals</h3>
+      <p>{stats.totalGoals}</p>
+
+      <h3>Completed Goals</h3>
+      <p>{stats.completedGoals}</p>
+
+      <h3>Total Roadmaps</h3>
+      <p>{stats.roadmaps}</p>
+
+      <h3>Average Progress</h3>
+      <p>{stats.averageProgress}%</p>
+    </div>
   );
 }
 
