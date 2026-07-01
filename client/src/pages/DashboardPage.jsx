@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { getDashboard } from "../services/dashboardService";
+import StatCard from "../components/StatCard";
+import "../styles/DashboardPage.css";
 
 function DashboardPage() {
   const [stats, setStats] = useState(null);
@@ -28,22 +30,23 @@ function DashboardPage() {
   if (!stats) return <h2>Loading...</h2>;
 
   return (
-    <div className="stats">
+    <div className="dashboard">
       <h1>Welcome, {user?.name} 👋</h1>
+
       <p>{user?.email}</p>
 
-      <hr />
-      <h3>Total Goals</h3>
-      <p>{stats.totalGoals}</p>
+      <div className="stats-grid">
+        <StatCard title="Total Goals" value={stats.totalGoals} />
 
-      <h3>Completed Goals</h3>
-      <p>{stats.completedGoals}</p>
+        <StatCard title="Completed Goals" value={stats.completedGoals} />
 
-      <h3>Total Roadmaps</h3>
-      <p>{stats.roadmaps}</p>
+        <StatCard title="Roadmaps" value={stats.roadmaps} />
 
-      <h3>Average Progress</h3>
-      <p>{stats.averageProgress}%</p>
+        <StatCard
+          title="Average Progress"
+          value={`${stats.averageProgress}%`}
+        />
+      </div>
     </div>
   );
 }
