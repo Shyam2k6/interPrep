@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Button from "../components/Button";
+import { Button } from "../components/ui";
 import "../styles/home.css";
 
 function HomePage() {
@@ -8,7 +8,7 @@ function HomePage() {
       <h1>InterPrep</h1>
 
       <Link to="/register">
-        <Button text="Get Started" />
+        <Button>Get Started</Button>
       </Link>
 
       <p>

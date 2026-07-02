@@ -15,8 +15,6 @@ function DashboardPage() {
       try {
         const data = await getDashboard(token);
 
-        console.log(data);
-
         setStats(data.data);
       } catch (error) {
         console.log(error);
