@@ -11,14 +11,12 @@ import {
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
-
   const { token } = useAuth();
 
   useEffect(() => {
     const fetchGoals = async () => {
       try {
         const data = await getGoals(token);
-
         setGoals(data.data.goal);
       } catch (error) {
         console.log(error);
@@ -40,7 +38,6 @@ function GoalsPage() {
   const handleDeleteGoal = async (goalId) => {
     try {
       await deleteGoal(goalId, token);
-
       setGoals((prevGoals) => prevGoals.filter((goal) => goal._id !== goalId));
     } catch (error) {
       console.log(error);
@@ -51,10 +48,7 @@ function GoalsPage() {
     try {
       const data = await updateGoal(
         goalId,
-        {
-          status: "completed",
-          progress: 100,
-        },
+        { status: "completed", progress: 100 },
         token,
       );
 
@@ -67,19 +61,41 @@ function GoalsPage() {
   };
 
   return (
-    <div>
-      <h1>My Goals</h1>
+    <div className="space-y-6">
+      <header className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+          Goals
+        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
+          Keep your priorities visible.
+        </h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Track what matters and move one step forward each day.
+        </p>
+      </header>
 
-      <GoalForm onAddGoal={handleAddGoal} />
+      <div className="grid gap-6 xl:grid-cols-[360px,minmax(0,1fr)]">
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <GoalForm onAddGoal={handleAddGoal} />
+        </section>
 
-      {goals.map((goal) => (
-        <GoalCard
-          key={goal._id}
-          goal={goal}
-          onDelete={handleDeleteGoal}
-          onUpdate={handleUpdateGoal}
-        />
-      ))}
+        <section className="space-y-4">
+          {goals.length === 0 ? (
+            <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600">
+              No goals yet. Add your first one to get started.
+            </div>
+          ) : (
+            goals.map((goal) => (
+              <GoalCard
+                key={goal._id}
+                goal={goal}
+                onDelete={handleDeleteGoal}
+                onUpdate={handleUpdateGoal}
+              />
+            ))
+          )}
+        </section>
+      </div>
     </div>
   );
 }
