@@ -2,15 +2,16 @@ const Goal = require("../models/Goal");
 const asyncHandler = require("../utils/asyncHandler");
 
 exports.createGoal = asyncHandler(async (req, res) => {
-  const { title } = req.body;
+  const { title, category } = req.body;
+
   const goal = await Goal.create({
     title,
+    category,
     user: req.user._id,
   });
-
   res.status(201).json({
     status: "success",
-    message: "User registered successfully",
+    message: "Goal created successfully",
     data: {
       goal,
     },

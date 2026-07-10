@@ -6,6 +6,11 @@ const goalSchema = new mongoose.Schema(
       type: String,
       required: [true, "Goal title is required"],
     },
+    category: {
+      type: String,
+      enum: ["Programming", "Interview Prep", "College", "Personal", "Fitness"],
+      default: "Personal",
+    },
     status: {
       type: String,
       enum: ["pending", "in-progress", "completed"],
