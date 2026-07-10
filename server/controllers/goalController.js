@@ -77,11 +77,15 @@ exports.updateGoal = asyncHandler(async (req, res) => {
 
   goal.title = req.body.title || goal.title;
 
+  if (req.body.category) {
+    goal.category = req.body.category;
+  }
+
   if (req.body.status) {
     goal.status = req.body.status;
   }
 
-  if (req.body.status !== undefined) {
+  if (req.body.progress !== undefined) {
     goal.progress = req.body.progress;
   }
 
