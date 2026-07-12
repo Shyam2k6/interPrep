@@ -14,6 +14,7 @@ function GoalsPage() {
   const [goals, setGoals] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [sortBy, setSortBy] = useState("newest");
 
   const { token } = useAuth();
 
@@ -30,6 +31,25 @@ function GoalsPage() {
     filteredGoals = filteredGoals.filter(
       (goal) => goal.category === selectedCategory,
     );
+  }
+
+  const sortedGoals = [...filteredGoals];
+
+  switch (sortBy) {
+    case "newest":
+      sortedGoals.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      break;
+    case "oldest":
+      sortedGoals.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      break;
+    case "title":
+      sortedGoals.sort((a, b) => a.title.localeCompare(b.title));
+      break;
+    case "progress":
+      sortedGoals.sort((a, b) => b.progress - a.progress);
+      break;
+    default:
+      break;
   }
 
   useEffect(() => {
@@ -119,12 +139,22 @@ function GoalsPage() {
               </option>
             ))}
           </select>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-900"
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title">Title (A-Z)</option>
+            <option value="progress">Progress (High-Low)</option>
+          </select>
           {goals.length === 0 ? (
             <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600">
               No goals yet. Add your first one to get started.
             </div>
           ) : filteredGoals.length > 0 ? (
-            filteredGoals.map((goal) => (
+            sortedGoals.map((goal) => (
               <GoalCard
                 key={goal._id}
                 goal={goal}
