@@ -2,11 +2,27 @@ const Goal = require("../models/Goal");
 const asyncHandler = require("../utils/asyncHandler");
 
 exports.createGoal = asyncHandler(async (req, res) => {
-  const { title, category } = req.body;
+  const { title, category, deadline } = req.body;
+
+  if (deadline) {
+    const selectedDate = new Date(deadline);
+    const today = new Date();
+
+    selectedDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Deadline cannot be in past",
+      });
+    }
+  }
 
   const goal = await Goal.create({
     title,
     category,
+    deadline,
     user: req.user._id,
   });
   res.status(201).json({

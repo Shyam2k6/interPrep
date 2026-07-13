@@ -27,6 +27,10 @@ const goalSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    deadline: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
