@@ -4,14 +4,16 @@ import { GOAL_CATEGORIES } from "../constants/goalCategories";
 function GoalForm({ onAddGoal }) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Personal");
+  const [deadline, setDeadline] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!title.trim()) return;
-    onAddGoal({ title, category });
+    onAddGoal({ title, category, deadline: deadline || null });
     setTitle("");
     setCategory("Personal");
+    setDeadline("");
   };
 
   return (
@@ -33,6 +35,18 @@ function GoalForm({ onAddGoal }) {
           <option value={goal}>{goal}</option>
         ))}
       </select>
+      <div>
+        <label className="mb-2 block text-sm font-medium text-slate-700">
+          Deadline (optional)
+        </label>
+
+        <input
+          type="date"
+          value={deadline}
+          onChange={(e) => setDeadline(e.target.value)}
+          className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-900"
+        />
+      </div>
       <button
         type="submit"
         className="w-full rounded-full bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
