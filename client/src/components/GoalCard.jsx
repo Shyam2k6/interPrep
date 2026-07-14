@@ -1,3 +1,5 @@
+import { getDeadlineStatus } from "../utils/getDeadlineStatus";
+
 function GoalCard({ goal, onDelete, onUpdate }) {
   const progress = goal.progress || 0;
   const status = goal.status || "pending";
@@ -10,6 +12,8 @@ function GoalCard({ goal, onDelete, onUpdate }) {
       })
     : null;
 
+  const deadlineStatus = getDeadlineStatus(goal);
+
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
       <div className="flex items-start justify-between gap-3">
@@ -21,6 +25,28 @@ function GoalCard({ goal, onDelete, onUpdate }) {
           <span className="mt-2 inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
             {goal.category}
           </span>
+          {deadlineStatus && (
+            <span
+              className={`mt-2 ml-2 inline-block rounded-full px-3 py-1 text-xs font-medium
+      ${
+        deadlineStatus === "overdue"
+          ? "bg-red-100 text-red-700"
+          : deadlineStatus === "today"
+            ? "bg-yellow-100 text-yellow-700"
+            : deadlineStatus === "upcoming"
+              ? "bg-emerald-100 text-emerald-700"
+              : "bg-blue-100 text-blue-700"
+      }`}
+            >
+              {deadlineStatus === "overdue" && "🔴 Overdue"}
+
+              {deadlineStatus === "today" && "🟡 Due Today"}
+
+              {deadlineStatus === "upcoming" && "🟢 Upcoming"}
+
+              {deadlineStatus === "completed" && "🔵 Completed"}
+            </span>
+          )}
           <p className="mt-2 text-sm text-slate-500">
             Keep momentum by checking in regularly.
           </p>
