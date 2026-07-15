@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const goalRoutes = require("./routes/goalRoutes");
 const roadmapRoutes = require("./routes/roadmapRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const sessionRoutes = require("./routes/sessionRoutes");
 const errorHandler = require("./middleware/errorMiddleware");
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/roadmaps", roadmapRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/study-sessions", sessionRoutes);
 
 app.use(errorHandler);
 
