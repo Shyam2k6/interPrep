@@ -4,6 +4,7 @@ const {
   createStudySession,
   getStudySessions,
   updateStudySession,
+  deleteStudySession,
 } = require("../controllers/studySessionController");
 
 const router = express.Router();
@@ -11,6 +12,7 @@ const router = express.Router();
 router
   .get("/", protect, getStudySessions)
   .post("/", protect, createStudySession)
-  .patch("/:id", protect, updateStudySession);
+  .patch("/:id", protect, updateStudySession)
+  .delete("/:id", protect, deleteStudySession);
 
 module.exports = router;

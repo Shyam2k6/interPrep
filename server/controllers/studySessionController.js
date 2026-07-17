@@ -90,3 +90,28 @@ exports.updateStudySession = asyncHandler(async (req, res) => {
     },
   });
 });
+
+exports.deleteStudySession = asyncHandler(async (req, res) => {
+  const studySession = await StudySession.findById(req.params.id);
+
+  if (!studySession) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Study session not found",
+    });
+  }
+
+  if (studySession.user.toString() !== req.user._id.toString()) {
+    return res.status(403).json({
+      status: "fail",
+      message: "Not authorized",
+    });
+  }
+
+  await studySession.deleteOne();
+
+  res.status(200).json({
+    status: "success",
+    message: "Study session deleted successfully",
+  });
+});
