@@ -54,3 +54,39 @@ exports.getStudySessions = asyncHandler(async (req, res) => {
     },
   });
 });
+
+exports.updateStudySession = asyncHandler(async (req, res) => {
+  const studySession = await StudySession.findById(req.params.id);
+
+  if (!studySession) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Study session not found",
+    });
+  }
+
+  if (studySession.user.toString() !== req.user._id.toString()) {
+    return res.status(403).json({
+      status: "fail",
+      message: "Not authorized",
+    });
+  }
+
+  if (req.body.duration !== undefined) {
+    studySession.duration = req.body.duration;
+  }
+
+  if (req.body.notes !== undefined) {
+    studySession.notes = req.body.notes;
+  }
+
+  await studySession.save();
+
+  res.status(200).json({
+    status: "success",
+    message: "Study session updated successfully",
+    data: {
+      studySession,
+    },
+  });
+});
