@@ -10,6 +10,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import PublicRoute from "../components/PublicRoute";
 import GoalsPage from "../pages/GoalsPage";
 import RoadmapsPage from "../pages/RoadmapsPage";
+import StudySessions from "../pages/StudySessions";
 
 function AppRoutes() {
   return (
@@ -68,6 +69,17 @@ function AppRoutes() {
           <ProtectedRoute>
             <DashboardLayout>
               <RoadmapsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/study-session"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <StudySessions />
             </DashboardLayout>
           </ProtectedRoute>
         }
