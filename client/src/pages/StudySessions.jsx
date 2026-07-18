@@ -3,7 +3,9 @@ import { useAuth } from "../hooks/useAuth";
 import { getGoals } from "../services/goalService";
 import {
   createStudySession,
+  deleteStudySession,
   getStudySessions,
+  updateStudySession,
 } from "../services/studySessionService";
 import StudySessionForm from "../components/StudySessionForm";
 import StudySessionCard from "../components/StudySessionCard";
@@ -53,6 +55,30 @@ function StudySessions() {
     }
   };
 
+  const handleUpdateSession = async (id, sessionData) => {
+    try {
+      const data = await updateStudySession(id, sessionData, token);
+
+      setStudySessions((prev) =>
+        prev.map((session) =>
+          session._id === id ? data.data.studySession : session,
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteSession = async (id) => {
+    try {
+      await deleteStudySession(id, token);
+
+      setStudySessions((prev) => prev.filter((session) => session._id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <header className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -85,7 +111,12 @@ function StudySessions() {
             </div>
           ) : (
             studySessions.map((session) => (
-              <StudySessionCard key={session._id} session={session} />
+              <StudySessionCard
+                key={session._id}
+                session={session}
+                onDelete={handleDeleteSession}
+                onUpdate={handleUpdateSession}
+              />
             ))
           )}
         </section>

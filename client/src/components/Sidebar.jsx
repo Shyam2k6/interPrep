@@ -5,6 +5,7 @@ const links = [
   { to: "/dashboard", label: "Dashboard" },
   { to: "/goals", label: "Goals" },
   { to: "/roadmaps", label: "Roadmaps" },
+  { to: "/study-session", label: "Study Sessions" },
 ];
 
 function Sidebar() {
