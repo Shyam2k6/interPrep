@@ -131,6 +131,22 @@ exports.getStudySessionStats = asyncHandler(async (req, res) => {
   const averageSessionDuration =
     totalSessions === 0 ? 0 : Math.round(totalStudyMinutes / totalSessions);
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const todaysSessions = sessions.filter((session) => {
+    const studyDate = new Date(session.studiedAt);
+
+    studyDate.setHours(0, 0, 0, 0);
+
+    return studyDate.getTime() === today.getTime();
+  });
+
+  const todayStudyMinutes = todaysSessions.reduce(
+    (total, session) => total + session.duration,
+    0,
+  );
+
   res.status(200).json({
     status: "success",
     message: "Study session statistics fetched successfully",
@@ -138,6 +154,7 @@ exports.getStudySessionStats = asyncHandler(async (req, res) => {
       totalSessions,
       totalStudyMinutes,
       averageSessionDuration,
+      todayStudyMinutes,
     },
   });
 });
