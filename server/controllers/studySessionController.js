@@ -115,3 +115,29 @@ exports.deleteStudySession = asyncHandler(async (req, res) => {
     message: "Study session deleted successfully",
   });
 });
+
+exports.getStudySessionStats = asyncHandler(async (req, res) => {
+  const sessions = await StudySession.find({
+    user: req.user._id,
+  });
+
+  const totalSessions = sessions.length;
+
+  const totalStudyMinutes = sessions.reduce(
+    (total, session) => total + session.duration,
+    0,
+  );
+
+  const averageSessionDuration =
+    totalSessions === 0 ? 0 : Math.round(totalStudyMinutes / totalSessions);
+
+  res.status(200).json({
+    status: "success",
+    message: "Study session statistics fetched successfully",
+    data: {
+      totalSessions,
+      totalStudyMinutes,
+      averageSessionDuration,
+    },
+  });
+});
