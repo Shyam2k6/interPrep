@@ -39,3 +39,12 @@ export const deleteStudySession = async (sessionId, token) => {
   });
   return response.data;
 };
+
+export const getStudySessionStats = async (token) => {
+  const response = await api.get("/study-sessions/stats", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};

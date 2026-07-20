@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { getDashboard } from "../services/dashboardService";
 import StatCard from "../components/StatCard";
+import { getStudySessionStats } from "../services/studySessionService";
+import AnalyticsCard from "../components/AnalyticsCard";
 
 function DashboardPage() {
   const [stats, setStats] = useState(null);
+  const [studyStats, setStudyStats] = useState(null);
   const { user, token, loading } = useAuth();
 
   useEffect(() => {
@@ -20,6 +23,14 @@ function DashboardPage() {
     };
 
     fetchDashboard();
+  }, [token]);
+
+  useEffect(() => {
+    async function fetchSessionStats() {
+      const data = await getStudySessionStats(token);
+      setStudyStats(data.data);
+    }
+    fetchSessionStats();
   }, [token]);
 
   if (loading)
@@ -63,6 +74,36 @@ function DashboardPage() {
           value={`${stats.averageProgress}%`}
         />
       </div>
+
+      <section className="space-y-4">
+        <h2 className="text-2xl font-semibold text-slate-900">
+          Learning Analytics
+        </h2>
+
+        {studyStats && (
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <AnalyticsCard
+              title="Study Sessions"
+              value={studyStats.totalSessions}
+            />
+
+            <AnalyticsCard
+              title="Study Minutes"
+              value={studyStats.totalStudyMinutes}
+            />
+
+            <AnalyticsCard
+              title="Average Session"
+              value={`${studyStats.averageSessionDuration} min`}
+            />
+
+            <AnalyticsCard
+              title="Today's Study"
+              value={`${studyStats.todayStudyMinutes} min`}
+            />
+          </div>
+        )}
+      </section>
 
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
