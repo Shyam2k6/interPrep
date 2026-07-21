@@ -2,12 +2,17 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { getDashboard } from "../services/dashboardService";
 import StatCard from "../components/StatCard";
-import { getStudySessionStats } from "../services/studySessionService";
+import {
+  getStudySessionStats,
+  getWeeklyActivity,
+} from "../services/studySessionService";
 import AnalyticsCard from "../components/AnalyticsCard";
+import WeeklyActivity from "../components/WeeklyActivity";
 
 function DashboardPage() {
   const [stats, setStats] = useState(null);
   const [studyStats, setStudyStats] = useState(null);
+  const [weeklyActivity, setWeeklyActivity] = useState([]);
   const { user, token, loading } = useAuth();
 
   useEffect(() => {
@@ -32,6 +37,14 @@ function DashboardPage() {
     }
     fetchSessionStats();
   }, [token]);
+
+  useEffect(() => {
+    async function fetchWeeklyActivity() {
+      const data = await getWeeklyActivity(token);
+      setWeeklyActivity(data.data.weeklyActivity);
+    }
+    fetchWeeklyActivity();
+  });
 
   if (loading)
     return (
@@ -64,6 +77,8 @@ function DashboardPage() {
           Weekly focus
         </div>
       </header>
+
+      <h2 className="text-2xl font-semibold text-slate-900">Overview</h2>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard title="Total Goals" value={stats.totalGoals} />
@@ -104,6 +119,8 @@ function DashboardPage() {
           </div>
         )}
       </section>
+
+      <WeeklyActivity activity={weeklyActivity} />
 
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">

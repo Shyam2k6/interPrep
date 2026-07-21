@@ -48,3 +48,13 @@ export const getStudySessionStats = async (token) => {
   });
   return response.data;
 };
+
+export const getWeeklyActivity = async (token) => {
+  const response = await api.get("/study-sessions/weekly-activity", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
