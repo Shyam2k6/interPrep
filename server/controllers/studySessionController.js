@@ -158,3 +158,56 @@ exports.getStudySessionStats = asyncHandler(async (req, res) => {
     },
   });
 });
+
+exports.getWeeklyActivity = asyncHandler(async (req, res) => {
+  const today = new Date();
+
+  const day = today.getDay();
+
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - day);
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+
+  const sessions = await StudySession.find({
+    user: req.user._id,
+    studiedAt: {
+      $gte: startOfWeek,
+      $lte: endOfWeek,
+    },
+  });
+
+  const weeklyMinutes = {
+    Sun: 0,
+    Mon: 0,
+    Tue: 0,
+    Wed: 0,
+    Thu: 0,
+    Fri: 0,
+    Sat: 0,
+  };
+
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  sessions.forEach((session) => {
+    const dayName = days[new Date(session.studiedAt).getDay()];
+    weeklyMinutes[dayName] += session.duration;
+  });
+
+  const weeklyActivity = Object.entries(weeklyMinutes).map(
+    ([day, minutes]) => ({
+      day,
+      minutes,
+    }),
+  );
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      weeklyActivity,
+    },
+  });
+});
