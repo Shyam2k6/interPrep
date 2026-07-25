@@ -275,3 +275,63 @@ exports.getStudyStreak = asyncHandler(async (req, res) => {
     },
   });
 });
+
+exports.getHeatmap = asyncHandler(async (req, res) => {
+  const formatDate = (date) => {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0",
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  };
+
+  const today = new Date();
+
+  const year = today.getFullYear();
+  const month = today.getMonth();
+
+  const startOfMonth = new Date(year, month, 1);
+  const endOfMonth = new Date(year, month + 1, 0);
+  endOfMonth.setHours(23, 59, 59, 999);
+
+  const sessions = await StudySession.find({
+    user: req.user._id,
+    studiedAt: {
+      $gte: startOfMonth,
+      $lte: endOfMonth,
+    },
+  });
+
+  const heatmapData = {};
+
+  sessions.forEach((session) => {
+    const date = formatDate(new Date(session.studiedAt));
+
+    if (!heatmapData[date]) {
+      heatmapData[date] = 0;
+    }
+
+    heatmapData[date] += session.duration;
+  });
+
+  const heatmap = [];
+
+  const daysInMonth = endOfMonth.getDate();
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const currentDate = new Date(year, month, day);
+
+    const dateString = formatDate(currentDate);
+
+    heatmap.push({
+      date: dateString,
+      minutes: heatmapData[dateString] || 0,
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      heatmap,
+    },
+  });
+});

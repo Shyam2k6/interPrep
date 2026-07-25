@@ -3,18 +3,21 @@ import { useAuth } from "../hooks/useAuth";
 import { getDashboard } from "../services/dashboardService";
 import StatCard from "../components/StatCard";
 import {
+  getHeatmap,
   getStudySessionStats,
   getStudyStreak,
   getWeeklyActivity,
 } from "../services/studySessionService";
 import AnalyticsCard from "../components/AnalyticsCard";
 import WeeklyActivity from "../components/WeeklyActivity";
+import Heatmap from "../components/Heatmap";
 
 function DashboardPage() {
   const [stats, setStats] = useState(null);
   const [studyStats, setStudyStats] = useState(null);
   const [weeklyActivity, setWeeklyActivity] = useState([]);
   const [studyStreak, setStudyStreak] = useState(0);
+  const [heatmap, setHeatmap] = useState([]);
   const { user, token, loading } = useAuth();
 
   useEffect(() => {
@@ -54,6 +57,14 @@ function DashboardPage() {
       setStudyStreak(streakData.data.currentStreak);
     }
     fetchStudyStreak();
+  }, [token]);
+
+  useEffect(() => {
+    async function fetchHeatmap() {
+      const heatmapData = await getHeatmap(token);
+      setHeatmap(heatmapData.data.heatmap);
+    }
+    fetchHeatmap();
   }, [token]);
 
   if (loading)
@@ -126,14 +137,11 @@ function DashboardPage() {
               title="Today's Study"
               value={`${studyStats.todayStudyMinutes} min`}
             />
-            {/* 
-            <AnalyticsCard
-              title="Current Streak"
-              value={`${studyStreak} Days 🔥`}
-            /> */}
           </div>
         )}
       </section>
+
+      <Heatmap heatmap={heatmap} />
 
       <WeeklyActivity activity={weeklyActivity} />
 

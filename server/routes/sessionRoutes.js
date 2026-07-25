@@ -8,6 +8,7 @@ const {
   getStudySessionStats,
   getWeeklyActivity,
   getStudyStreak,
+  getHeatmap,
 } = require("../controllers/studySessionController");
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router
   .get("/stats", protect, getStudySessionStats)
   .get("/weekly-activity", protect, getWeeklyActivity)
   .get("/streak", protect, getStudyStreak)
+  .get("/heatmap", protect, getHeatmap)
   .post("/", protect, createStudySession)
   .patch("/:id", protect, updateStudySession)
   .delete("/:id", protect, deleteStudySession);

@@ -68,3 +68,13 @@ export const getStudyStreak = async (token) => {
 
   return response.data;
 };
+
+export const getHeatmap = async (token) => {
+  const response = await api.get("/study-sessions/heatmap", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
