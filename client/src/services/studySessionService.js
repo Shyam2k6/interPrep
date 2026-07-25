@@ -58,3 +58,13 @@ export const getWeeklyActivity = async (token) => {
 
   return response.data;
 };
+
+export const getStudyStreak = async (token) => {
+  const response = await api.get("/study-sessions/streak", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};

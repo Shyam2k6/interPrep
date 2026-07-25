@@ -211,3 +211,67 @@ exports.getWeeklyActivity = asyncHandler(async (req, res) => {
     },
   });
 });
+
+exports.getStudyStreak = asyncHandler(async (req, res) => {
+  const sessions = await StudySession.find({
+    user: req.user._id,
+  }).sort({ studiedAt: -1 });
+
+  // No study sessions
+  if (sessions.length === 0) {
+    return res.status(200).json({
+      status: "success",
+      data: {
+        currentStreak: 0,
+      },
+    });
+  }
+
+  // Remove duplicate study dates
+  const uniqueDates = new Set();
+
+  sessions.forEach((session) => {
+    const date = new Date(session.studiedAt);
+    date.setHours(0, 0, 0, 0);
+    uniqueDates.add(date.getTime());
+  });
+
+  const dates = [...uniqueDates];
+
+  const oneDay = 24 * 60 * 60 * 1000;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const yesterday = today.getTime() - oneDay;
+
+  let currentStreak = 0;
+
+  // First study day must be today or yesterday
+  if (dates[0] !== today.getTime() && dates[0] !== yesterday) {
+    return res.status(200).json({
+      status: "success",
+      data: {
+        currentStreak: 0,
+      },
+    });
+  }
+
+  currentStreak = 1;
+
+  for (let i = 1; i < dates.length; i++) {
+    if (dates[i - 1] - dates[i] === oneDay) {
+      currentStreak++;
+    } else {
+      break;
+    }
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Study streak fetched successfully",
+    data: {
+      currentStreak,
+    },
+  });
+});

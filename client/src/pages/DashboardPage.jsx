@@ -4,6 +4,7 @@ import { getDashboard } from "../services/dashboardService";
 import StatCard from "../components/StatCard";
 import {
   getStudySessionStats,
+  getStudyStreak,
   getWeeklyActivity,
 } from "../services/studySessionService";
 import AnalyticsCard from "../components/AnalyticsCard";
@@ -13,6 +14,7 @@ function DashboardPage() {
   const [stats, setStats] = useState(null);
   const [studyStats, setStudyStats] = useState(null);
   const [weeklyActivity, setWeeklyActivity] = useState([]);
+  const [studyStreak, setStudyStreak] = useState(0);
   const { user, token, loading } = useAuth();
 
   useEffect(() => {
@@ -45,6 +47,14 @@ function DashboardPage() {
     }
     fetchWeeklyActivity();
   });
+
+  useEffect(() => {
+    async function fetchStudyStreak() {
+      const streakData = await getStudyStreak(token);
+      setStudyStreak(streakData.data.currentStreak);
+    }
+    fetchStudyStreak();
+  }, [token]);
 
   if (loading)
     return (
@@ -116,6 +126,11 @@ function DashboardPage() {
               title="Today's Study"
               value={`${studyStats.todayStudyMinutes} min`}
             />
+            {/* 
+            <AnalyticsCard
+              title="Current Streak"
+              value={`${studyStreak} Days 🔥`}
+            /> */}
           </div>
         )}
       </section>
@@ -128,12 +143,12 @@ function DashboardPage() {
         </p>
         <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{`🔥 ${studyStreak}`}</h1>
             <h3 className="text-lg font-semibold text-slate-900">
               You are making steady progress.
             </h3>
             <p className="mt-1 text-sm text-slate-600">
-              A clean plan and a few focused sessions are enough to move
-              forward.
+              Current Streak Keep it alive today.
             </p>
           </div>
           <div className="rounded-full bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700">
