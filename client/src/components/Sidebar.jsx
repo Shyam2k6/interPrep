@@ -6,6 +6,8 @@ const links = [
   { to: "/goals", label: "Goals" },
   { to: "/roadmaps", label: "Roadmaps" },
   { to: "/study-session", label: "Study Sessions" },
+  { to: "/ai-coach", label: "AI Coach" },
+  { to: "/ai-roadmap", label: "AI Roadmap" },
 ];
 
 function Sidebar() {

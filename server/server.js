@@ -1,6 +1,8 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 const express = require("express");
 const app = express();
-const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const User = require("./models/User");
@@ -9,9 +11,9 @@ const goalRoutes = require("./routes/goalRoutes");
 const roadmapRoutes = require("./routes/roadmapRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 const errorHandler = require("./middleware/errorMiddleware");
 
-dotenv.config();
 connectDB();
 
 app.use(cors());
@@ -22,6 +24,7 @@ app.use("/api/goals", goalRoutes);
 app.use("/api/roadmaps", roadmapRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/study-sessions", sessionRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.use(errorHandler);
 

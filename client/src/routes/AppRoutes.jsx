@@ -11,6 +11,8 @@ import PublicRoute from "../components/PublicRoute";
 import GoalsPage from "../pages/GoalsPage";
 import RoadmapsPage from "../pages/RoadmapsPage";
 import StudySessions from "../pages/StudySessions";
+import AIStudyCoach from "../pages/AIStudyCoach";
+import AIRoadmapGenerator from "../pages/AIRoadmapGenerator";
 
 function AppRoutes() {
   return (
@@ -80,6 +82,26 @@ function AppRoutes() {
           <ProtectedRoute>
             <DashboardLayout>
               <StudySessions />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ai-coach"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <AIStudyCoach />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ai-roadmap"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <AIRoadmapGenerator />
             </DashboardLayout>
           </ProtectedRoute>
         }
