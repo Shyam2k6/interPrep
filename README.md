@@ -1,72 +1,127 @@
-# 🚀 InterPrep v1
+# InterPrep
 
-InterPrep is a full-stack MERN application that helps students organize their interview preparation by managing learning goals, tracking roadmaps, and monitoring progress through a personalized dashboard.
+AI-powered Interview Preparation and Learning Productivity Platform
 
-## ✨ Features
+InterPrep helps students and developers create learning goals,
+follow structured roadmaps, track study progress, and analyze
+their learning consistency.
 
-- 🔐 JWT Authentication
-- 👤 User Registration & Login
-- 🎯 Goal Management (CRUD)
-- 🛣️ Roadmap Management (CRUD)
-- 📊 Dashboard with Progress Statistics
-- 🔒 Protected Routes
-- ⚡ RESTful API Architecture
+## Why InterPrep?
 
-## 🛠️ Tech Stack
+Most learning platforms provide courses but lack personalized
+progress tracking and accountability.
 
-**Frontend**
+InterPrep combines:
+- Goal management
+- Learning roadmaps
+- Study analytics
+- Progress visualization
+- AI-powered learning assistance
 
+## Features
+
+### Authentication
+- JWT based authentication
+- Protected routes
+- User-specific data isolation
+
+
+### Goal Management
+- Create learning goals
+- Track completion percentage
+- Filter and search goals
+
+
+### Roadmap System
+- Create structured learning paths
+- Break goals into actionable steps
+- Track roadmap progress
+
+
+### Study Sessions
+- Log study sessions
+- Track learning duration
+- Analyze consistency
+
+
+### Learning Analytics
+- GitHub-style study heatmap
+- Progress statistics
+- Productivity insights
+
+
+### AI Features (V2)
+- AI generated learning suggestions
+- AI assisted roadmap creation
+- Personalized recommendations
+
+
+## Tech Stack
+
+Frontend:
 - React
+- Redux Toolkit
 - React Router
-- Axios
 - Tailwind CSS
 
-**Backend**
-
+Backend:
 - Node.js
 - Express.js
 - MongoDB
 - Mongoose
-- JWT
-- bcryptjs
+- JWT Authentication
 
-## ⚙️ Installation
+AI:
+- Gemini/Groq API
 
-```bash
-# Clone the repository
-git clone <repository-url>
+Deployment:
+- Vercel
+- Render
+- MongoDB Atlas
 
-# Backend
-cd server
-npm install
-npm run dev
 
-# Frontend
-cd client
-npm install
-npm run dev
-```
+## System Design
 
-Create a `.env` file in the server folder:
+(Add architecture diagram)
 
-```env
-PORT=5000
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret_key
-```
+Frontend
+ ↓
+Express API
+ ↓
+MongoDB
 
-## 📌 Version 1
 
-This version focuses on building the core functionality of the application:
+## Database Design
 
-- User Authentication
-- Goal Tracking
-- Roadmap Tracking
-- Dashboard
-- Secure Backend APIs
+(Add ER diagram)
 
-Version 2 will introduce advanced productivity features and UI enhancements.
 
-## 👨‍💻 Author
+## Project Evolution
 
-**Shyam C B**
+### Version 1
+Completed:
+- Authentication
+- Goal CRUD
+- Roadmap CRUD
+- Progress tracking
+
+### Version 2
+Added:
+- Study sessions
+- Analytics dashboard
+- Heatmap tracking
+- AI integration
+- Improved UX
+
+
+## Future Improvements
+
+- Interview simulator
+- Resume analyzer
+- Peer learning groups
+- Advanced AI coaching
+
+
+## Author
+
+Shyam C B
