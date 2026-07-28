@@ -1,19 +1,49 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { generateRoadmap } from "../services/aiService";
+import { createRoadmap } from "../services/roadmapService";
 
 function AIRoadmapGenerator() {
   const { token } = useAuth();
 
   const [goal, setGoal] = useState("");
   const [roadmap, setRoadmap] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = await generateRoadmap(goal, token);
+    try {
+      setLoading(true);
 
-    setRoadmap(data.roadmap);
+      const data = await generateRoadmap(goal, token);
+
+      setRoadmap(data.roadmap);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveRoadmap = async () => {
+    try {
+      await createRoadmap(
+        {
+          title: roadmap.title,
+          steps: roadmap.steps,
+        },
+        token,
+      );
+
+      alert("Roadmap saved successfully!");
+
+      setGoal("");
+      setRoadmap(null);
+    } catch (error) {
+      console.log(error);
+      alert("Failed to save roadmap");
+    }
   };
 
   return (
@@ -28,8 +58,12 @@ function AIRoadmapGenerator() {
           className="w-full rounded-xl border p-3"
         />
 
-        <button className="mt-3 rounded-xl bg-slate-900 px-5 py-3 text-white">
-          Generate
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-3 rounded-xl bg-slate-900 px-5 py-3 text-white"
+        >
+          {loading ? "Generating..." : "Generate"}
         </button>
       </form>
 
@@ -44,6 +78,13 @@ function AIRoadmapGenerator() {
               </div>
             ))}
           </div>
+
+          <button
+            onClick={handleSaveRoadmap}
+            className="mt-6 rounded-xl bg-emerald-600 px-5 py-3 text-white hover:bg-emerald-700"
+          >
+            Save Roadmap
+          </button>
         </div>
       )}
     </div>

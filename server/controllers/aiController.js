@@ -3,6 +3,7 @@ const asyncHandler = require("../utils/asyncHandler");
 
 const Goal = require("../models/Goal");
 const Roadmap = require("../models/Roadmap");
+const AIChat = require("../models/AIChat");
 const StudySession = require("../models/StudySession");
 
 exports.chatWithAI = asyncHandler(async (req, res) => {
@@ -16,6 +17,12 @@ exports.chatWithAI = asyncHandler(async (req, res) => {
   }
 
   const userId = req.user._id;
+
+  await AIChat.create({
+    user: userId,
+    role: "user",
+    message,
+  });
 
   // Fetch user's data
   const goals = await Goal.find({ user: userId })
@@ -83,9 +90,28 @@ Instructions:
     max_tokens: 1000,
   });
 
+  const aiResponse = completion.choices[0].message.content;
+
+  await AIChat.create({
+    user: userId,
+    role: "assistant",
+    message: aiResponse,
+  });
+
   res.status(200).json({
     status: "success",
-    response: completion.choices[0].message.content,
+    response: aiResponse,
+  });
+});
+
+exports.getChatHistory = asyncHandler(async (req, res) => {
+  const chats = await AIChat.find({
+    user: req.user._id,
+  }).sort({ createdAt: 1 });
+
+  res.status(200).json({
+    status: "success",
+    data: chats,
   });
 });
 
