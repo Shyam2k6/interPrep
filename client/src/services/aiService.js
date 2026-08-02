@@ -27,3 +27,13 @@ export const generateRoadmap = async (goal, token) => {
 
   return response.data;
 };
+
+export const getChatHistory = async (token) => {
+  const response = await api.get("/ai/history", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};

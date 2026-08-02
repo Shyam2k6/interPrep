@@ -111,7 +111,9 @@ exports.getChatHistory = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
-    data: chats,
+    data: {
+      chats,
+    },
   });
 });
 

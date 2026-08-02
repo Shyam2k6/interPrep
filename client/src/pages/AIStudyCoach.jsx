@@ -1,25 +1,60 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { chatWithAI } from "../services/aiService";
+import { chatWithAI, getChatHistory } from "../services/aiService";
 
 function AIStudyCoach() {
   const { token } = useAuth();
 
   const [message, setMessage] = useState("");
-  const [response, setResponse] = useState("");
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    async function fetchHistory() {
+      try {
+        const data = await getChatHistory(token);
+        setMessages(data.data.chats);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchHistory();
+  }, [token]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!message.trim()) return;
 
+    const userMessage = {
+      role: "user",
+      message,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+
+    const currentMessage = message;
+    setMessage("");
+
     try {
       setLoading(true);
 
-      const data = await chatWithAI(message, token);
+      const data = await chatWithAI(currentMessage, token);
 
-      setResponse(data.response);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          message: data.response,
+        },
+      ]);
     } catch (error) {
       console.log(error);
     } finally {
@@ -35,30 +70,52 @@ function AIStudyCoach() {
         <p className="mt-2 text-slate-500">Ask anything about your learning.</p>
       </header>
 
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-[500px] overflow-y-auto">
+        <div className="space-y-4">
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+                msg.role === "user"
+                  ? "ml-auto bg-slate-900 text-white"
+                  : "bg-slate-100 text-slate-900"
+              }`}
+            >
+              <p className="whitespace-pre-wrap">{msg.message}</p>
+            </div>
+          ))}
+
+          {loading && (
+            <div className="max-w-[75%] rounded-2xl bg-slate-100 px-4 py-3">
+              Thinking...
+            </div>
+          )}
+
+          <div ref={bottomRef}></div>
+        </div>
+      </div>
+
       <form
         onSubmit={handleSubmit}
-        className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4"
+        className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
       >
-        <textarea
-          rows={5}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Ask AI..."
-          className="w-full rounded-xl border p-3 outline-none"
-        />
+        <div className="flex gap-3">
+          <textarea
+            rows={3}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Ask AI..."
+            className="flex-1 rounded-xl border p-3 outline-none"
+          />
 
-        <button className="rounded-xl bg-slate-900 px-5 py-3 text-white">
-          {loading ? "Thinking..." : "Ask AI"}
-        </button>
-      </form>
-
-      {response && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="font-semibold">AI Response</h2>
-
-          <p className="mt-3 whitespace-pre-wrap">{response}</p>
+          <button
+            disabled={loading}
+            className="rounded-xl bg-slate-900 px-6 text-white"
+          >
+            Send
+          </button>
         </div>
-      )}
+      </form>
     </div>
   );
 }
