@@ -5,9 +5,10 @@ const Goal = require("../models/Goal");
 const Roadmap = require("../models/Roadmap");
 const AIChat = require("../models/AIChat");
 const StudySession = require("../models/StudySession");
+const Conversation = require("../models/Conversation");
 
 exports.chatWithAI = asyncHandler(async (req, res) => {
-  const { message } = req.body;
+  const { message, conversationId } = req.body;
 
   if (!message || !message.trim()) {
     return res.status(400).json({
@@ -18,8 +19,20 @@ exports.chatWithAI = asyncHandler(async (req, res) => {
 
   const userId = req.user._id;
 
+  let activeConversation = conversationId;
+
+  if (!activeConversation) {
+    const conversation = await Conversation.create({
+      user: userId,
+      title: message.substring(0, 40),
+    });
+
+    activeConversation = conversation._id;
+  }
+
   await AIChat.create({
     user: userId,
+    conversationId: activeConversation,
     role: "user",
     message,
   });
@@ -94,25 +107,121 @@ Instructions:
 
   await AIChat.create({
     user: userId,
+    conversationId: activeConversation,
     role: "assistant",
     message: aiResponse,
   });
 
+  await Conversation.findByIdAndUpdate(
+    activeConversation,
+    {
+      lastMessage: aiResponse,
+    },
+    {
+      timestamps: true,
+    },
+  );
+
   res.status(200).json({
     status: "success",
     response: aiResponse,
+    conversationId: activeConversation,
   });
 });
 
 exports.getChatHistory = asyncHandler(async (req, res) => {
-  const chats = await AIChat.find({
+  const { conversationId } = req.query;
+
+  const conversation = await Conversation.findOne({
+    _id: conversationId,
     user: req.user._id,
+  });
+
+  if (!conversation) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Conversation not found",
+    });
+  }
+
+  const chats = await AIChat.find({
+    conversationId,
   }).sort({ createdAt: 1 });
 
   res.status(200).json({
     status: "success",
     data: {
       chats,
+    },
+  });
+});
+
+exports.getConversations = asyncHandler(async (req, res) => {
+  const conversations = await Conversation.find({
+    user: req.user._id,
+  }).sort({ updatedAt: -1 });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      conversations,
+    },
+  });
+});
+
+exports.deleteConversation = asyncHandler(async (req, res) => {
+  const conversation = await Conversation.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
+
+  if (!conversation) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Conversation not found",
+    });
+  }
+
+  await AIChat.deleteMany({
+    conversationId: conversation._id,
+  });
+
+  await conversation.deleteOne();
+
+  res.status(200).json({
+    status: "success",
+    message: "Conversation deleted successfully",
+  });
+});
+
+exports.renameConversation = asyncHandler(async (req, res) => {
+  const { title } = req.body;
+
+  const conversation = await Conversation.findOneAndUpdate(
+    {
+      _id: req.params.id,
+      user: req.user._id,
+    },
+    {
+      title,
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  if (!conversation) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Conversation not found",
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      conversation,
     },
   });
 });
