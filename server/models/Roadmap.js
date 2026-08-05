@@ -31,6 +31,11 @@ const roadmapSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    goal: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Goal",
+      default: null,
+    },
   },
   {
     timestamps: true,

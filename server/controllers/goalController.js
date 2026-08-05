@@ -97,16 +97,20 @@ exports.updateGoal = asyncHandler(async (req, res) => {
     goal.category = req.body.category;
   }
 
-  if (req.body.status) {
-    goal.status = req.body.status;
-  }
-
   if (req.body.progress !== undefined) {
     goal.progress = req.body.progress;
-  }
-
-  if (goal.progress === 100) {
-    goal.status = "completed";
+    if (goal.progress === 100) {
+      goal.status = "completed";
+    } else if (goal.progress > 0) {
+      goal.status = "in-progress";
+    } else {
+      goal.status = "pending";
+    }
+  } else if (req.body.status) {
+    goal.status = req.body.status;
+    if (goal.status === "completed") {
+      goal.progress = 100;
+    }
   }
 
   await goal.save();

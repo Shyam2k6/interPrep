@@ -12,6 +12,7 @@ const roadmapRoutes = require("./routes/roadmapRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const errorHandler = require("./middleware/errorMiddleware");
 
 connectDB();
@@ -25,6 +26,7 @@ app.use("/api/roadmaps", roadmapRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/study-sessions", sessionRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use(errorHandler);
 

@@ -1,15 +1,42 @@
 const Roadmap = require("../models/Roadmap");
+const Goal = require("../models/Goal");
 const asyncHandler = require("../utils/asyncHandler");
 
+const syncGoalProgress = async (goalId, progress) => {
+  if (!goalId) return;
+  try {
+    const goal = await Goal.findById(goalId);
+    if (!goal) return;
+
+    goal.progress = progress;
+    if (progress === 100) {
+      goal.status = "completed";
+    } else if (progress > 0) {
+      goal.status = "in-progress";
+    } else {
+      goal.status = "pending";
+    }
+    await goal.save();
+  } catch (err) {
+    console.error("Failed to sync goal progress:", err);
+  }
+};
+
 exports.createRoadmap = asyncHandler(async (req, res) => {
-  const { title, description, steps } = req.body;
+  const { title, description, steps, goal } = req.body;
 
   const roadmap = await Roadmap.create({
     title,
     description,
     steps,
     user: req.user._id,
+    goal: goal || null,
   });
+
+  // Sync initial progress to goal (which is 0)
+  if (goal) {
+    await syncGoalProgress(goal, 0);
+  }
 
   res.status(201).json({
     status: "success",
@@ -24,7 +51,7 @@ exports.getRoadmaps = asyncHandler(async (req, res) => {
   const roadmaps = await Roadmap.find({ user: req.user._id }).populate(
     "user",
     "name email",
-  );
+  ).populate("goal", "title category");
 
   res.status(200).json({
     status: "success",
@@ -60,13 +87,19 @@ exports.completeStep = asyncHandler(async (req, res) => {
     });
   }
 
-  step.completed = true;
+  // Toggle step completion instead of hardcoding to true
+  step.completed = !step.completed;
 
   const completedSteps = roadmap.steps.filter((step) => step.completed).length;
 
-  roadmap.progress = Math.round((completedSteps / roadmap.steps.length) * 100);
+  roadmap.progress = roadmap.steps.length > 0 ? Math.round((completedSteps / roadmap.steps.length) * 100) : 0;
 
   await roadmap.save();
+
+  // Sync progress to the goal if linked
+  if (roadmap.goal) {
+    await syncGoalProgress(roadmap.goal, roadmap.progress);
+  }
 
   res.status(200).json({
     status: "success",

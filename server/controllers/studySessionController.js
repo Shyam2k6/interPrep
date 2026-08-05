@@ -285,19 +285,17 @@ exports.getHeatmap = asyncHandler(async (req, res) => {
   };
 
   const today = new Date();
+  today.setHours(23, 59, 59, 999);
 
-  const year = today.getFullYear();
-  const month = today.getMonth();
-
-  const startOfMonth = new Date(year, month, 1);
-  const endOfMonth = new Date(year, month + 1, 0);
-  endOfMonth.setHours(23, 59, 59, 999);
+  const startRange = new Date();
+  startRange.setDate(today.getDate() - 365);
+  startRange.setHours(0, 0, 0, 0);
 
   const sessions = await StudySession.find({
     user: req.user._id,
     studiedAt: {
-      $gte: startOfMonth,
-      $lte: endOfMonth,
+      $gte: startRange,
+      $lte: today,
     },
   });
 
@@ -315,10 +313,11 @@ exports.getHeatmap = asyncHandler(async (req, res) => {
 
   const heatmap = [];
 
-  const daysInMonth = endOfMonth.getDate();
-
-  for (let day = 1; day <= daysInMonth; day++) {
-    const currentDate = new Date(year, month, day);
+  // Generate 365 days of chronological records ending today
+  for (let i = 365; i >= 0; i--) {
+    const currentDate = new Date();
+    currentDate.setDate(today.getDate() - i);
+    currentDate.setHours(0, 0, 0, 0);
 
     const dateString = formatDate(currentDate);
 
