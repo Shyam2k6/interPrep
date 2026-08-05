@@ -1,28 +1,32 @@
 const Goal = require("../models/Goal");
-const StudySession = require("../models/StudySession");
+const StudySession = require("../models/studySession");
 const asyncHandler = require("../utils/asyncHandler");
 
 exports.createStudySession = asyncHandler(async (req, res) => {
-  const { goal, duration, notes } = req.body;
+  const { goal, duration, notes, roadmap, stepId } = req.body;
 
-  const existingGoal = await Goal.findById(goal);
+  if (goal) {
+    const existingGoal = await Goal.findById(goal);
 
-  if (!existingGoal) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Goal not found",
-    });
-  }
+    if (!existingGoal) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Goal not found",
+      });
+    }
 
-  if (existingGoal.user.toString() !== req.user._id.toString()) {
-    return res.status(403).json({
-      status: "fail",
-      message: "Not authorized",
-    });
+    if (existingGoal.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        status: "fail",
+        message: "Not authorized",
+      });
+    }
   }
 
   const studySession = await StudySession.create({
-    goal,
+    goal: goal || undefined,
+    roadmap: roadmap || undefined,
+    stepId: stepId || undefined,
     user: req.user._id,
     duration,
     notes,
@@ -42,6 +46,7 @@ exports.getStudySessions = asyncHandler(async (req, res) => {
     user: req.user._id,
   })
     .populate("goal", "title category")
+    .populate("roadmap", "title")
     .sort({
       studiedAt: -1,
     });

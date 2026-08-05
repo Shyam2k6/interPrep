@@ -7,6 +7,7 @@ router
   .get("/", protect, controllers.getRoadmaps)
   .post("/", protect, controllers.createRoadmap)
   .patch("/:roadmapId/steps/:stepId", protect, controllers.completeStep)
+  .post("/:roadmapId/steps/:stepId/study", protect, controllers.studyStep)
   .delete("/:id", protect, controllers.deleteRoadmap);
 
 module.exports = router;

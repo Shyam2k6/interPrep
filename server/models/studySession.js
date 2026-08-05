@@ -5,7 +5,16 @@ const studySessionSchema = new mongoose.Schema(
     goal: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Goal",
-      required: true,
+      required: false,
+    },
+    roadmap: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Roadmap",
+      default: null,
+    },
+    stepId: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
     },
 
     user: {

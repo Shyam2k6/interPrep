@@ -4,7 +4,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const Goal = require("../models/Goal");
 const Roadmap = require("../models/Roadmap");
 const AIChat = require("../models/AIChat");
-const StudySession = require("../models/StudySession");
+const StudySession = require("../models/studySession");
 const Conversation = require("../models/Conversation");
 
 exports.chatWithAI = asyncHandler(async (req, res) => {
@@ -237,7 +237,7 @@ exports.generateRoadmap = asyncHandler(async (req, res) => {
   }
 
   const prompt = `
-Generate a learning roadmap for:
+Generate a detailed learning roadmap for:
 
 "${goal}"
 
@@ -247,13 +247,24 @@ Return ONLY valid JSON in this format:
   "title": "Roadmap Title",
   "steps": [
     {
-      "title": "Step 1",
-      "completed": false
+      "title": "Step Title (e.g., Master React Hooks)",
+      "description": "Short explanation of what concepts should be studied in this step",
+      "completed": false,
+      "requiredTime": 30,
+      "resources": [
+        {
+          "title": "Official Documentation Name (e.g., MDN Web Docs, React Official Docs, Express API Reference)",
+          "url": "Must be a stable, verified official documentation link or search query URL that NEVER 404s. Do NOT use deep sub-paths that can break. Prefer official landing pages (e.g. https://react.dev/reference/react) or search queries on the official documentation site (e.g. https://developer.mozilla.org/en-US/search?q=javascript+array+map or https://mongoosejs.com/docs/search.html). Do NOT link to blogs, video tutorials, or unofficial articles.",
+          "type": "documentation"
+        }
+      ]
     }
   ]
 }
 
-Do not include markdown or explanations.
+Ensure there are 4-8 steps. Each step must have exactly 1 highly trusted official documentation resource link.
+Provide an estimated study duration in 'requiredTime' (integer in minutes). Calculate this based on the difficulty and complexity of the step's topic (e.g., 15 minutes for basic installations, setups, or intros; 30-45 minutes for standard core concepts/APIs; and 60-90 minutes for complex implementations, integrations, architectures, or debugging).
+Do not include markdown blocks (like \`\`\`json) or any explanations outside the JSON.
 `;
 
   const completion = await groq.chat.completions.create({
@@ -278,8 +289,14 @@ Do not include markdown or explanations.
     .replace(/```/g, "")
     .trim();
 
+  const parsedRoadmap = JSON.parse(roadmap);
+  if (parsedRoadmap && parsedRoadmap.steps) {
+    const { verifyAndFilterResources } = require("../utils/urlVerifier");
+    parsedRoadmap.steps = await verifyAndFilterResources(parsedRoadmap.steps);
+  }
+
   res.status(200).json({
     status: "success",
-    roadmap: JSON.parse(roadmap),
+    roadmap: parsedRoadmap,
   });
 });

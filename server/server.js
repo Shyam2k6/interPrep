@@ -14,8 +14,10 @@ const sessionRoutes = require("./routes/sessionRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const errorHandler = require("./middleware/errorMiddleware");
+const { runMigration } = require("./utils/migration");
 
 connectDB();
+runMigration();
 
 app.use(cors());
 app.use(express.json());

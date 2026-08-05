@@ -24,8 +24,49 @@ const roadmapSchema = new mongoose.Schema(
           type: Boolean,
           default: false,
         },
+        description: {
+          type: String,
+          default: "",
+        },
+        resources: [
+          {
+            title: {
+              type: String,
+              required: true,
+            },
+            url: {
+              type: String,
+              required: true,
+            },
+            type: {
+              type: String,
+              enum: ["article", "video", "documentation", "exercise", "other"],
+              default: "documentation",
+            },
+          },
+        ],
+        timeSpent: {
+          type: Number,
+          default: 0,
+        },
+        requiredTime: {
+          type: Number,
+          default: 15,
+        },
       },
     ],
+    migratedResources: {
+      type: Boolean,
+      default: false,
+    },
+    migratedResourcesV2: {
+      type: Boolean,
+      default: false,
+    },
+    migratedResourcesV3: {
+      type: Boolean,
+      default: false,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectID,
       ref: "User",
