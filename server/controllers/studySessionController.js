@@ -116,48 +116,48 @@ exports.deleteStudySession = asyncHandler(async (req, res) => {
   });
 });
 
-exports.getStudySessionStats = asyncHandler(async (req, res) => {
-  const sessions = await StudySession.find({
-    user: req.user._id,
-  });
+// exports.getStudySessionStats = asyncHandler(async (req, res) => {
+//   const sessions = await StudySession.find({
+//     user: req.user._id,
+//   });
 
-  const totalSessions = sessions.length;
+//   const totalSessions = sessions.length;
 
-  const totalStudyMinutes = sessions.reduce(
-    (total, session) => total + session.duration,
-    0,
-  );
+//   const totalStudyMinutes = sessions.reduce(
+//     (total, session) => total + session.duration,
+//     0,
+//   );
 
-  const averageSessionDuration =
-    totalSessions === 0 ? 0 : Math.round(totalStudyMinutes / totalSessions);
+//   const averageSessionDuration =
+//     totalSessions === 0 ? 0 : Math.round(totalStudyMinutes / totalSessions);
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+//   const today = new Date();
+//   today.setHours(0, 0, 0, 0);
 
-  const todaysSessions = sessions.filter((session) => {
-    const studyDate = new Date(session.studiedAt);
+//   const todaysSessions = sessions.filter((session) => {
+//     const studyDate = new Date(session.studiedAt);
 
-    studyDate.setHours(0, 0, 0, 0);
+//     studyDate.setHours(0, 0, 0, 0);
 
-    return studyDate.getTime() === today.getTime();
-  });
+//     return studyDate.getTime() === today.getTime();
+//   });
 
-  const todayStudyMinutes = todaysSessions.reduce(
-    (total, session) => total + session.duration,
-    0,
-  );
+//   const todayStudyMinutes = todaysSessions.reduce(
+//     (total, session) => total + session.duration,
+//     0,
+//   );
 
-  res.status(200).json({
-    status: "success",
-    message: "Study session statistics fetched successfully",
-    data: {
-      totalSessions,
-      totalStudyMinutes,
-      averageSessionDuration,
-      todayStudyMinutes,
-    },
-  });
-});
+//   res.status(200).json({
+//     status: "success",
+//     message: "Study session statistics fetched successfully",
+//     data: {
+//       totalSessions,
+//       totalStudyMinutes,
+//       averageSessionDuration,
+//       todayStudyMinutes,
+//     },
+//   });
+// });
 
 exports.getWeeklyActivity = asyncHandler(async (req, res) => {
   const today = new Date();

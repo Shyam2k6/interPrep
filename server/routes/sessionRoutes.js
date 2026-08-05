@@ -5,7 +5,7 @@ const {
   getStudySessions,
   updateStudySession,
   deleteStudySession,
-  getStudySessionStats,
+  // getStudySessionStats,
   getWeeklyActivity,
   getStudyStreak,
   getHeatmap,
@@ -15,7 +15,7 @@ const router = express.Router();
 
 router
   .get("/", protect, getStudySessions)
-  .get("/stats", protect, getStudySessionStats)
+  // .get("/stats", protect, getStudySessionStats)
   .get("/weekly-activity", protect, getWeeklyActivity)
   .get("/streak", protect, getStudyStreak)
   .get("/heatmap", protect, getHeatmap)
