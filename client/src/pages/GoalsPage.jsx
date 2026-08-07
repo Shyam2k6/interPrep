@@ -9,12 +9,15 @@ import {
   updateGoal,
 } from "../services/goalService";
 import { GOAL_CATEGORIES } from "../constants/goalCategories";
+import EmptyState from "../components/EmptyState";
+import { CardSkeleton } from "../components/ui/Skeleton";
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
+  const [loading, setLoading] = useState(true);
 
   const { token } = useAuth();
 
@@ -55,10 +58,13 @@ function GoalsPage() {
   useEffect(() => {
     const fetchGoals = async () => {
       try {
+        setLoading(true);
         const data = await getGoals(token);
         setGoals(data.data.goal);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -83,11 +89,11 @@ function GoalsPage() {
     }
   };
 
-  const handleUpdateGoal = async (goalId) => {
+  const handleUpdateGoal = async (goalId, updatedData) => {
     try {
       const data = await updateGoal(
         goalId,
-        { status: "completed", progress: 100 },
+        updatedData,
         token,
       );
 
@@ -100,21 +106,21 @@ function GoalsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <header className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+    <div className="space-y-6 animate-fadeIn">
+      <header className="rounded-3xl bg-[#e2583e] p-6 shadow-lg shadow-orange-500/10 text-white border-none">
+        <p className="text-sm font-bold uppercase tracking-[0.2em] text-white/85">
           Goals
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
+        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-white">
           Keep your priorities visible.
         </h1>
-        <p className="mt-2 text-sm text-slate-600">
+        <p className="mt-2 text-sm text-white/90">
           Track what matters and move one step forward each day.
         </p>
       </header>
 
       <div className="grid gap-6 xl:grid-cols-[360px,minmax(0,1fr)]">
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-fit">
           <GoalForm onAddGoal={handleAddGoal} />
         </section>
 
@@ -126,33 +132,43 @@ function GoalsPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-900"
           />
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-900"
-          >
-            <option value="All">All Categories</option>
+          <div className="grid grid-cols-2 gap-4">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-900"
+            >
+              <option value="All">All Categories</option>
 
-            {GOAL_CATEGORIES.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-900"
-          >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="title">Title (A-Z)</option>
-            <option value="progress">Progress (High-Low)</option>
-          </select>
-          {goals.length === 0 ? (
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600">
-              No goals yet. Add your first one to get started.
+              {GOAL_CATEGORIES.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-900"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="title">Title (A-Z)</option>
+              <option value="progress">Progress (High-Low)</option>
+            </select>
+          </div>
+
+          {loading ? (
+            <div className="space-y-4">
+              <CardSkeleton />
+              <CardSkeleton />
             </div>
+          ) : goals.length === 0 ? (
+            <EmptyState
+              title="No goals set yet"
+              description="Start mapping your milestones by creating your first learning priority goal on the left panel."
+              icon="goals"
+            />
           ) : filteredGoals.length > 0 ? (
             sortedGoals.map((goal) => (
               <GoalCard
@@ -163,15 +179,11 @@ function GoalsPage() {
               />
             ))
           ) : (
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center">
-              <h3 className="text-lg font-semibold text-slate-900">
-                No goals found
-              </h3>
-
-              <p className="mt-2 text-sm text-slate-500">
-                Try searching with a different keyword.
-              </p>
-            </div>
+            <EmptyState
+              title="No goals found"
+              description="We couldn't find any goals matching your search or filters. Try adjusting your search term."
+              icon="empty"
+            />
           )}
         </section>
       </div>

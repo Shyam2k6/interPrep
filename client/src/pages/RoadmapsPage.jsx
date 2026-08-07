@@ -6,11 +6,16 @@ import {
   toggleStep,
   deleteRoadmap,
 } from "../services/roadmapService";
+import { getGoals } from "../services/goalService";
 import RoadmapCard from "../components/RoadmapCard";
 import RoadmapForm from "../components/RoadmapForm";
+import EmptyState from "../components/EmptyState";
+import { CardSkeleton } from "../components/ui/Skeleton";
 
 function RoadmapsPage() {
   const [roadmaps, setRoadmaps] = useState([]);
+  const [goals, setGoals] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { token } = useAuth();
 
   useEffect(() => {
@@ -18,14 +23,32 @@ function RoadmapsPage() {
 
     const fetchRoadmaps = async () => {
       try {
+        setLoading(true);
         const data = await getRoadmaps(token);
-        setRoadmaps(data.data.roadmaps);
+        setRoadmaps(data.data.roadmaps || []);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRoadmaps();
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchGoals = async () => {
+      try {
+        const data = await getGoals(token);
+        setGoals(data.data.goal || []);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchRoadmaps();
+    fetchGoals();
   }, [token]);
 
   const handleAddRoadmap = async (roadmapData) => {
@@ -61,30 +84,43 @@ function RoadmapsPage() {
     }
   };
 
+  const handleRoadmapUpdate = (updatedRoadmap) => {
+    setRoadmaps((prev) =>
+      prev.map((r) => (r._id === updatedRoadmap._id ? updatedRoadmap : r)),
+    );
+  };
+
   return (
-    <div className="space-y-6">
-      <header className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+    <div className="space-y-6 animate-fadeIn">
+      <header className="rounded-3xl bg-[#e2583e] p-6 shadow-lg shadow-orange-500/10 text-white border-none">
+        <p className="text-sm font-bold uppercase tracking-[0.2em] text-white/85">
           Roadmaps
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
+        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-white">
           Build a path, one milestone at a time.
         </h1>
-        <p className="mt-2 text-sm text-slate-600">
+        <p className="mt-2 text-sm text-white/90">
           Break larger ambitions into clear, manageable steps.
         </p>
       </header>
 
       <div className="grid gap-6 xl:grid-cols-[360px,minmax(0,1fr)]">
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <RoadmapForm onAddRoadmap={handleAddRoadmap} />
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-fit">
+          <RoadmapForm onAddRoadmap={handleAddRoadmap} goals={goals} />
         </section>
 
         <section className="space-y-4">
-          {roadmaps.length === 0 ? (
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600">
-              No roadmaps yet. Create your first structured plan.
+          {loading ? (
+            <div className="space-y-4">
+              <CardSkeleton />
+              <CardSkeleton />
             </div>
+          ) : roadmaps.length === 0 ? (
+            <EmptyState
+              title="No roadmaps created"
+              description="Break your high-level plans into structured milestones by creating a roadmap on the left panel, or trigger the AI generator."
+              icon="roadmaps"
+            />
           ) : (
             roadmaps.map((roadmap) => (
               <RoadmapCard
@@ -92,6 +128,7 @@ function RoadmapsPage() {
                 roadmap={roadmap}
                 onToggleStep={handleToggleStep}
                 onDelete={handleDeleteRoadmap}
+                onRoadmapUpdate={handleRoadmapUpdate}
               />
             ))
           )}

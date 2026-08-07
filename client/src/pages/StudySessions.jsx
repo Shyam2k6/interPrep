@@ -1,59 +1,37 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { getGoals } from "../services/goalService";
 import {
-  createStudySession,
   deleteStudySession,
   getStudySessions,
   updateStudySession,
 } from "../services/studySessionService";
-import StudySessionForm from "../components/StudySessionForm";
 import StudySessionCard from "../components/StudySessionCard";
+import EmptyState from "../components/EmptyState";
+import { CardSkeleton } from "../components/ui/Skeleton";
 
 function StudySessions() {
-  const [goals, setGoals] = useState([]);
   const [studySessions, setStudySessions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { token } = useAuth();
 
   useEffect(() => {
-    const fetchGoals = async () => {
-      try {
-        const data = await getGoals(token);
-        setGoals(data.data.goal);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchGoals();
-  }, [token]);
-
-  useEffect(() => {
     const fetchStudySessions = async () => {
       try {
+        setLoading(true);
         const data = await getStudySessions(token);
-        setStudySessions(data.data.studySessions);
+        setStudySessions(data.data.studySessions || []);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchStudySessions();
-  }, [token]);
-
-  const handleCreateSession = async (sessionData) => {
-    try {
-      const data = await createStudySession(sessionData, token);
-
-      setStudySessions((prevSessions) => [
-        data.data.studySession,
-        ...prevSessions,
-      ]);
-    } catch (error) {
-      console.log(error);
+    if (token) {
+      fetchStudySessions();
     }
-  };
+  }, [token]);
 
   const handleUpdateSession = async (id, sessionData) => {
     try {
@@ -80,46 +58,45 @@ function StudySessions() {
   };
 
   return (
-    <div className="space-y-6">
-      <header className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+    <div className="space-y-6 animate-fadeIn">
+      <header className="rounded-3xl bg-[#e2583e] p-6 shadow-lg shadow-orange-500/10 text-white border-none">
+        <p className="text-sm font-bold uppercase tracking-[0.2em] text-white/85">
           Study Sessions
         </p>
-
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
-          Track your learning.
+        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-white">
+          Study History
         </h1>
-
-        <p className="mt-2 text-sm text-slate-600">
-          Record every study session and build consistent learning habits.
+        <p className="mt-2 text-sm text-white/90">
+          Review your tracked study milestones and progress logs.
         </p>
       </header>
 
-      <div className="grid gap-6 xl:grid-cols-[360px,minmax(0,1fr)]">
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <StudySessionForm goals={goals} onSubmit={handleCreateSession} />
-        </section>
+      <div className="max-w-4xl mx-auto space-y-4">
+        <h2 className="text-xl font-semibold text-slate-900">
+          Recent Study Sessions
+        </h2>
 
-        <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-slate-900">
-            Recent Study Sessions
-          </h2>
-
-          {studySessions.length === 0 ? (
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600">
-              No study sessions yet. Log your first study session.
-            </div>
-          ) : (
-            studySessions.map((session) => (
-              <StudySessionCard
-                key={session._id}
-                session={session}
-                onDelete={handleDeleteSession}
-                onUpdate={handleUpdateSession}
-              />
-            ))
-          )}
-        </section>
+        {loading ? (
+          <div className="space-y-4">
+            <CardSkeleton />
+            <CardSkeleton />
+          </div>
+        ) : studySessions.length === 0 ? (
+          <EmptyState
+            title="No study sessions logged"
+            description="To log a study session and track your minutes automatically, go to the Roadmaps page, expand a milestone, and click 'Start Study Focus Timer'."
+            icon="sessions"
+          />
+        ) : (
+          studySessions.map((session) => (
+            <StudySessionCard
+              key={session._id}
+              session={session}
+              onDelete={handleDeleteSession}
+              onUpdate={handleUpdateSession}
+            />
+          ))
+        )}
       </div>
     </div>
   );

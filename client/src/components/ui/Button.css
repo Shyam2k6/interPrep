@@ -5,25 +5,35 @@
   border-radius: 10px;
   cursor: pointer;
   font-size: 15px;
-  font-weight: 500;
-  transition: 0.2s;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn-primary {
-  background: #111827;
-  color: white;
+  background: #0f0f11;
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: #1f2937;
+  background: #e2583e;
+}
+
+.btn-accent {
+  background: #e2583e;
+  color: #ffffff;
+}
+
+.btn-accent:hover {
+  background: #c8452d;
 }
 
 .btn-secondary {
-  background: white;
-  color: #111827;
+  background: #faf7f2;
+  color: #0f0f11;
   border: 1px solid #d1d5db;
 }
 
 .btn-secondary:hover {
-  background: #f9fafb;
+  background: #f4f5f6;
+  border-color: #ccd0d6;
 }

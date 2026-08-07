@@ -34,11 +34,11 @@ function StudySessionCard({ session, onDelete, onUpdate }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-slate-900">
-            {session.goal.title}
+            {session.goal?.title || "Deleted Goal"}
           </h3>
 
           <span className="mt-2 inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-            {session.goal.category}
+            {session.goal?.category || "N/A"}
           </span>
         </div>
 

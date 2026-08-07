@@ -43,3 +43,17 @@ export const deleteRoadmap = async (roadmapId, token) => {
 
   return response.data;
 };
+
+export const studyStep = async (roadmapId, stepId, studyData, token) => {
+  const response = await api.post(
+    `/roadmaps/${roadmapId}/steps/${stepId}/study`,
+    studyData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  return response.data;
+};

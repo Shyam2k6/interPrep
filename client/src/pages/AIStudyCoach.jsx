@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 
@@ -19,7 +20,7 @@ function AIStudyCoach() {
   const [activeConversation, setActiveConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
 
   useEffect(() => {
     fetchConversations();
@@ -79,6 +80,7 @@ function AIStudyCoach() {
     }
   }
 
+  // Handle trigger for starting a clean new chat session
   function handleNewChat() {
     setActiveConversation(null);
     setMessages([]);
@@ -114,57 +116,27 @@ function AIStudyCoach() {
   }
 
   return (
-    <div className="space-y-3">
-      <header className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
-              AI assistant
-            </p>
-            <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
-              AI Study Coach
-            </h1>
-            <p className="mt-1 text-sm leading-6 text-slate-600">
-              Ask for planning help, feedback, or study guidance in a calm,
-              focused workspace.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setShowSidebar((prev) => !prev)}
-              className="rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            >
-              {showSidebar ? "Hide history" : "Show history"}
-            </button>
-            <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
-              Personalized support
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div
-        className={`grid min-h-[74vh] gap-4 ${showSidebar ? "lg:grid-cols-[240px_minmax(0,1fr)]" : "grid-cols-1"}`}
-      >
-        {showSidebar && (
-          <ConversationSidebar
-            conversations={conversations}
-            activeConversation={activeConversation}
-            onSelectConversation={setActiveConversation}
-            onNewChat={handleNewChat}
-            onDeleteConversation={handleDeleteConversation}
-            onRenameConversation={handleRenameConversation}
-          />
-        )}
-
-        <ChatWindow
-          messages={messages}
-          loading={loading}
+    <div className="flex h-screen w-full bg-[#faf7f2] overflow-hidden animate-fadeIn">
+      {showSidebar && (
+        <ConversationSidebar
+          conversations={conversations}
           activeConversation={activeConversation}
-          onSend={handleSend}
+          onSelectConversation={setActiveConversation}
+          onNewChat={handleNewChat}
+          onDeleteConversation={handleDeleteConversation}
+          onRenameConversation={handleRenameConversation}
         />
-      </div>
+      )}
+
+      <ChatWindow
+        messages={messages}
+        loading={loading}
+        activeConversation={activeConversation}
+        onSend={handleSend}
+        showSidebar={showSidebar}
+        onToggleSidebar={() => setShowSidebar((prev) => !prev)}
+        onNewChat={handleNewChat}
+      />
     </div>
   );
 }
