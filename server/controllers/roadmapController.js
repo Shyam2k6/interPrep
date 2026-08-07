@@ -1,6 +1,6 @@
 const Roadmap = require("../models/Roadmap");
 const Goal = require("../models/Goal");
-const StudySession = require("../models/studySession");
+const StudySession = require("../models/StudySession");
 const asyncHandler = require("../utils/asyncHandler");
 const groq = require("../utils/groq");
 

@@ -1,5 +1,5 @@
 const Goal = require("../models/Goal");
-const StudySession = require("../models/studySession");
+const StudySession = require("../models/StudySession");
 const asyncHandler = require("../utils/asyncHandler");
 
 exports.createStudySession = asyncHandler(async (req, res) => {

@@ -4,7 +4,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const Goal = require("../models/Goal");
 const Roadmap = require("../models/Roadmap");
 const AIChat = require("../models/AIChat");
-const StudySession = require("../models/studySession");
+const StudySession = require("../models/StudySession");
 const Conversation = require("../models/Conversation");
 
 exports.chatWithAI = asyncHandler(async (req, res) => {
