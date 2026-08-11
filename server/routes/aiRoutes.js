@@ -7,6 +7,8 @@ const {
   getConversations,
   deleteConversation,
   renameConversation,
+  explainCareerTransition,
+  suggestRoadmap,
 } = require("../controllers/aiController");
 
 const router = express.Router();
@@ -17,5 +19,7 @@ router.get("/history", protect, getChatHistory);
 router.get("/conversations", protect, getConversations);
 router.patch("/conversations/:id", protect, renameConversation);
 router.delete("/conversations/:id", protect, deleteConversation);
+router.post("/career-explanation", protect, explainCareerTransition);
+router.post("/roadmap-suggestion", protect, suggestRoadmap);
 
 module.exports = router;

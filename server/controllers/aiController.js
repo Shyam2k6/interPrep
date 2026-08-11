@@ -300,3 +300,111 @@ Do not include markdown blocks (like \`\`\`json) or any explanations outside the
     roadmap: parsedRoadmap,
   });
 });
+
+// Helper for AI completions in aiController
+const getAIChat = async (prompt, systemInstruction = "You are a professional career strategist.") => {
+  if (process.env.GEMINI_API_KEY) {
+    try {
+      const gemini = require("../utils/gemini");
+      const response = await gemini.models.generateContent({
+        model: "gemini-1.5-flash",
+        contents: prompt,
+        config: { systemInstruction }
+      });
+      return response.text;
+    } catch (err) {
+      console.warn("Gemini query failed, falling back to Groq:", err);
+    }
+  }
+
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      { role: "system", content: systemInstruction },
+      { role: "user", content: prompt },
+    ],
+    temperature: 0.5,
+  });
+  return completion.choices[0].message.content;
+};
+
+// @desc    Explain why a career is recommended and how AI affects current role
+// @route   POST /api/ai/career-explanation
+// @access  Private
+exports.explainCareerTransition = asyncHandler(async (req, res) => {
+  const { currentRole, targetRole, fitScore, distanceLabel, gaps } = req.body;
+
+  if (!currentRole || !targetRole) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Please specify currentRole and targetRole.",
+    });
+  }
+
+  const prompt = `
+A student is analyzing a transition from "${currentRole}" to "${targetRole}".
+Our structured algorithms computed:
+- Career Suitability Fit Score: ${fitScore}%
+- Transition Difficulty: ${distanceLabel}
+- Major Skill Gaps to build: ${JSON.stringify(gaps)}
+
+Write a professional, personalized career guidance summary explaining:
+1. Why this transition makes sense based on their transferable competencies.
+2. How AI is transforming the tasks in their current role ("${currentRole}") and why building the gaps (${JSON.stringify(gaps)}) makes them more future-proof.
+3. Maintain a supportive, evidence-grounded tone. Do not guarantee salaries, and do not make absolute predictions about job loss. Limit the response to 3-4 sentences.
+`;
+
+  try {
+    const explanation = await getAIChat(prompt, "You are a professional career path strategist and technical recruiter.");
+    res.status(200).json({
+      status: "success",
+      data: { explanation: explanation.trim() },
+    });
+  } catch (err) {
+    console.error("Career explanation AI error:", err);
+    res.status(500).json({
+      status: "fail",
+      message: "Failed to generate AI career explanation.",
+    });
+  }
+});
+
+// @desc    Suggest roadmap sequencing based on gaps
+// @route   POST /api/ai/roadmap-suggestion
+// @access  Private
+exports.suggestRoadmap = asyncHandler(async (req, res) => {
+  const { targetRole, gaps } = req.body;
+
+  if (!targetRole || !gaps || gaps.length === 0) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Please specify targetRole and a list of skill gaps.",
+    });
+  }
+
+  const prompt = `
+A student is preparing for a transition to "${targetRole}".
+They have the following key skill gaps: ${JSON.stringify(gaps)}.
+
+Suggest a high-level phase-by-phase learning sequence:
+- Which skills to learn first as prerequisites.
+- Which ones to learn later.
+- Provide a brief, supportive reason why this sequence works.
+- Maintain a concise, professional tone (under 4 sentences).
+`;
+
+  try {
+    const suggestion = await getAIChat(prompt, "You are a structured technical curriculum designer.");
+    res.status(200).json({
+      status: "success",
+      data: { suggestion: suggestion.trim() },
+    });
+  } catch (err) {
+    console.error("Roadmap suggestion AI error:", err);
+    res.status(500).json({
+      status: "fail",
+      message: "Failed to generate AI roadmap suggestion.",
+    });
+  }
+});
+
