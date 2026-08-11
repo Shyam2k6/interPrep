@@ -177,6 +177,12 @@ Visualize study trends, goal completion, weekly activity and long-term study con
 
 ![InterPrep Analytics](docs/screenshots/analytics.png)
 
+### Personalized AI coach
+
+AI Coach acts as an interactive learning companion, helping students understand concepts rather than simply providing answers.
+
+![InterPrep Analytics](docs/screenshots/ai-coach.png)
+
 ### Career Intelligence — Skill Gap Analysis
 
 Career Intelligence identifies emerging AI-related skills and compares them against the student's current proficiency.
