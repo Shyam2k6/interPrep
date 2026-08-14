@@ -13,6 +13,9 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const occupationRoutes = require("./routes/occupationRoutes");
+const careerRoutes = require("./routes/careerRoutes");
+const assessmentRoutes = require("./routes/assessmentRoutes");
 const errorHandler = require("./middleware/errorMiddleware");
 const { runMigration } = require("./utils/migration");
 
@@ -29,6 +32,9 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/study-sessions", sessionRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/occupations", occupationRoutes);
+app.use("/api/career", careerRoutes);
+app.use("/api/assessments", assessmentRoutes);
 
 app.use(errorHandler);
 
