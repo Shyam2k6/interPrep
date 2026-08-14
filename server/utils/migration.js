@@ -119,6 +119,10 @@ const runMigration = async () => {
       console.log(`[Migration] Successfully enriched and verified roadmap "${roadmap.title}"`);
     }
     console.log("[Migration] Check completed.");
+    
+    // Seed Career Intelligence dataset
+    const seedCareerIntelligence = require("./seedCareerIntelligence");
+    await seedCareerIntelligence();
   } catch (err) {
     console.error("[Migration] Failed to run database enrichment:", err);
   }
