@@ -1,0 +1,29 @@
+{
+  "name": "inter-prep",
+  "version": "1.0.0",
+  "description": "> **A career-aware learning and interview preparation platform that helps students understand how their chosen career is evolving, identify skill gaps, and turn those insights into an actionable learning roadmap.**",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shyam2k6/interPrep.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Shyam2k6/interPrep/issues"
+  },
+  "homepage": "https://github.com/Shyam2k6/interPrep#readme",
+  "dependencies": {
+    "concurrently": "^10.0.4"
+  }
+}

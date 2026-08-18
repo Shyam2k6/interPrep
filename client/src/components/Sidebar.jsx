@@ -3,6 +3,8 @@ import { useAuth } from "../hooks/useAuth";
 
 const links = [
   { to: "/dashboard", label: "Dashboard" },
+  { to: "/career", label: "Career Intelligence" },
+  { to: "/skills", label: "My Skills" },
   { to: "/goals", label: "Goals" },
   { to: "/roadmaps", label: "Roadmaps" },
   { to: "/study-session", label: "Study Sessions" },

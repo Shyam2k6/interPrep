@@ -77,3 +77,21 @@ export const renameConversation = async (conversationId, title, token) => {
 
   return response.data;
 };
+
+export const getCareerExplanation = async (data, token) => {
+  const response = await api.post("/ai/career-explanation", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const getRoadmapSuggestion = async (data, token) => {
+  const response = await api.post("/ai/roadmap-suggestion", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};

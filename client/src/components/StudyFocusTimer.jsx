@@ -29,7 +29,7 @@ function StudyFocusTimer({
     if (isActive && !success) {
       // Record when this start/resume occurred
       startTimeRef.current = Date.now() - (elapsedBeforePauseRef.current * 1000);
-      
+
       intervalRef.current = setInterval(() => {
         const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
         setSeconds(elapsed);
@@ -113,7 +113,7 @@ function StudyFocusTimer({
   // Minimized Widget Rendering
   if (isMinimized) {
     return (
-      <div 
+      <div
         onClick={() => setIsMinimized(false)}
         className="fixed top-6 right-6 z-[9999] flex items-center gap-3 rounded-2xl bg-[#e2583e] hover:bg-[#c8452d] text-white px-4 py-3 shadow-2xl cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 group border border-[#c8452d]"
       >
@@ -124,7 +124,7 @@ function StudyFocusTimer({
           )}
           <span className={`relative inline-flex rounded-full h-3 w-3 ${isActive ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
         </span>
-        
+
         <div className="flex flex-col text-left">
           <span className="text-[9px] font-bold uppercase tracking-wider text-orange-100">
             {isActive ? "Active Study Time" : "Paused"}
@@ -154,7 +154,7 @@ function StudyFocusTimer({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-fadeIn">
       <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl border border-slate-200 bg-[#faf7f2] shadow-2xl p-5 space-y-4 animate-scaleUp scrollbar-thin">
-        
+
         {/* Controls: Minimize & Close */}
         <div className="absolute top-4 right-4 flex items-center gap-2">
           <button
@@ -233,11 +233,10 @@ function StudyFocusTimer({
             {/* Timer Visualizer */}
             <div className="flex flex-col items-center justify-center py-4 rounded-2xl bg-slate-50 border border-slate-155 relative overflow-hidden">
               <div className="absolute inset-0 bg-grid opacity-[0.1] pointer-events-none" />
-              
+
               <div
-                className={`absolute w-24 h-24 rounded-full bg-[#e2583e]/5 transition-transform duration-1000 ${
-                  isActive ? "scale-150 animate-ping" : "scale-100"
-                }`}
+                className={`absolute w-24 h-24 rounded-full bg-[#e2583e]/5 transition-transform duration-1000 ${isActive ? "scale-150 animate-ping" : "scale-100"
+                  }`}
               />
 
               <div className="relative text-4xl font-mono font-bold tracking-widest text-slate-900">
@@ -252,11 +251,10 @@ function StudyFocusTimer({
                 <button
                   type="button"
                   onClick={handleToggleTimer}
-                  className={`rounded-full px-4 py-1.5 text-xs font-bold transition shadow-sm active:scale-95 cursor-pointer ${
-                    isActive
-                      ? "bg-slate-900 text-white hover:bg-slate-800"
-                      : "bg-[#e2583e] text-white hover:bg-[#c8452d]"
-                  }`}
+                  className={`rounded-full px-4 py-1.5 text-xs font-bold transition shadow-sm active:scale-95 cursor-pointer ${isActive
+                    ? "bg-slate-900 text-white hover:bg-slate-800"
+                    : "bg-[#e2583e] text-white hover:bg-[#c8452d]"
+                    }`}
                 >
                   {isActive ? "⏸ Pause" : "▶ Resume"}
                 </button>

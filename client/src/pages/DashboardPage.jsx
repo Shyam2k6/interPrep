@@ -1,28 +1,29 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { getDashboard } from "../services/dashboardService";
+import { getCareerProfile } from "../services/careerService";
 import StatCard from "../components/StatCard";
 import {
   getHeatmap,
-  // getStudySessionStats,
   getStudyStreak,
   getWeeklyActivity,
   getStudySessions,
 } from "../services/studySessionService";
-// import AnalyticsCard from "../components/AnalyticsCard";
 import Heatmap from "../components/Heatmap";
 import StudyTrendChart from "../components/analytics/StudyTrendChart";
 import GoalCompletionChart from "../components/analytics/GoalCompletionChart";
 import WeeklyStudyChart from "../components/analytics/WeeklyStudyChart";
 import ExportDataCard from "../components/ExportDataCard";
+import { useNavigate } from "react-router-dom";
 
 function DashboardPage() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
-  // const [studyStats, setStudyStats] = useState(null);
   const [weeklyActivity, setWeeklyActivity] = useState([]);
   const [studyStreak, setStudyStreak] = useState(0);
   const [heatmap, setHeatmap] = useState([]);
   const [sessions, setSessions] = useState([]);
+  const [careerProfile, setCareerProfile] = useState(null);
   const { user, token, loading } = useAuth();
 
   useEffect(() => {
@@ -37,7 +38,19 @@ function DashboardPage() {
       }
     };
 
+    const fetchProfile = async () => {
+      try {
+        const profileRes = await getCareerProfile(token);
+        if (profileRes.status === "success") {
+          setCareerProfile(profileRes.data.profile);
+        }
+      } catch (error) {
+        console.log("Failed to load profile in dashboard:", error);
+      }
+    };
+
     fetchDashboard();
+    fetchProfile();
   }, [token]);
 
   // useEffect(() => {
@@ -120,6 +133,68 @@ function DashboardPage() {
           Weekly focus
         </div>
       </header>
+
+      {/* SkillShift Career Transition Callout Widget */}
+      <section className="bg-white border border-[#eae6db] rounded-3xl p-5 shadow-sm space-y-4">
+        {careerProfile ? (
+          (careerProfile.chosenCareer || careerProfile.currentOccupation) ? (
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="space-y-1 w-full md:w-2/3">
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Chosen Career Goal</span>
+                <h3 className="text-lg font-black text-slate-900 leading-tight">
+                  🎯 Targeted Path: {careerProfile.chosenCareer || careerProfile.currentOccupation}
+                </h3>
+                <div className="space-y-1 pt-1.5">
+                  <div className="flex justify-between text-xs font-bold text-slate-500">
+                    <span>AI Readiness Index:</span>
+                    <span>{careerProfile.aiReadinessScore || 0}/100</span>
+                  </div>
+                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                    <div
+                      className="bg-[#e2583e] h-2.5 rounded-full transition-all duration-500"
+                      style={{ width: `${careerProfile.aiReadinessScore || 0}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button
+                  onClick={() => navigate("/career")}
+                  className="bg-[#e2583e] hover:bg-[#c8452d] text-white rounded-2xl px-5 py-2.5 text-xs font-bold transition shadow-sm cursor-pointer block text-center"
+                >
+                  View Career Hub &rarr;
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-between items-center flex-wrap gap-4">
+              <div>
+                <h3 className="text-base font-extrabold text-slate-900 leading-tight">🧭 Career Intelligence</h3>
+                <p className="text-xs text-slate-400 mt-1">Select your targeted career to view AI-era task impacts and skill recommendations.</p>
+              </div>
+              <button
+                onClick={() => navigate("/career")}
+                className="bg-[#0f0f11] hover:bg-slate-800 text-white rounded-2xl px-5 py-2 text-xs font-bold transition cursor-pointer"
+              >
+                Set Career Goal
+              </button>
+            </div>
+          )
+        ) : (
+          <div className="flex justify-between items-center flex-wrap gap-4">
+            <div>
+              <h3 className="text-base font-extrabold text-slate-900 leading-tight">👤 Setup Career Profile</h3>
+              <p className="text-xs text-slate-400 mt-1">Analyze how AI is changing your current occupational tasks and start learning.</p>
+            </div>
+            <button
+              onClick={() => navigate("/career")}
+              className="bg-[#e2583e] hover:bg-[#c8452d] text-white rounded-2xl px-5 py-2 text-xs font-bold transition cursor-pointer"
+            >
+              Setup Profile
+            </button>
+          </div>
+        )}
+      </section>
 
       <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
         Overview

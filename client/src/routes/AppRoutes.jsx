@@ -13,6 +13,9 @@ import RoadmapsPage from "../pages/RoadmapsPage";
 import StudySessions from "../pages/StudySessions";
 import AIStudyCoach from "../pages/AIStudyCoach";
 import AIRoadmapGenerator from "../pages/AIRoadmapGenerator";
+import CareerIntelligenceLayout from "../pages/CareerIntelligenceLayout";
+import MySkills from "../pages/MySkills";
+import AssessmentPage from "../pages/AssessmentPage";
 
 function AppRoutes() {
   return (
@@ -102,6 +105,36 @@ function AppRoutes() {
           <ProtectedRoute>
             <DashboardLayout>
               <AIRoadmapGenerator />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/career"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <CareerIntelligenceLayout />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/skills"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MySkills />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/assessment"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <AssessmentPage />
             </DashboardLayout>
           </ProtectedRoute>
         }
