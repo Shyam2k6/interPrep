@@ -25,7 +25,7 @@ const getAIChatCompletion = async (prompt, systemInstruction = "You are a profes
   }
 
   const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+    model: "openai/gpt-oss-20b",
     messages: [
       { role: "system", content: systemInstruction },
       { role: "user", content: prompt },

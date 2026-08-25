@@ -51,6 +51,21 @@ exports.chatWithAI = asyncHandler(async (req, res) => {
     .select("duration notes studiedAt goal")
     .lean();
 
+  // Simplify data to reduce tokens and prevent exceeding rate limits
+  const simplifiedRoadmaps = roadmaps.map((r) => ({
+    title: r.title,
+    progress: r.progress,
+    incompleteSteps: r.steps
+      .filter((s) => !s.completed)
+      .map((s) => s.title),
+  }));
+
+  const simplifiedStudySessions = studySessions.map((s) => ({
+    goal: s.goal ? s.goal.title : null,
+    duration: s.duration,
+    studiedAt: s.studiedAt,
+  }));
+
   // Build prompt
   const prompt = `
 You are InterPrep AI, an intelligent study coach.
@@ -65,12 +80,12 @@ ${JSON.stringify(goals, null, 2)}
 ==========================
 ROADMAPS
 ==========================
-${JSON.stringify(roadmaps, null, 2)}
+${JSON.stringify(simplifiedRoadmaps, null, 2)}
 
 ==========================
 STUDY SESSIONS
 ==========================
-${JSON.stringify(studySessions, null, 2)}
+${JSON.stringify(simplifiedStudySessions, null, 2)}
 
 ==========================
 USER QUESTION
@@ -87,7 +102,7 @@ Instructions:
 `;
 
   const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+    model: "openai/gpt-oss-20b",
     messages: [
       {
         role: "system",
@@ -268,7 +283,7 @@ Do not include markdown blocks (like \`\`\`json) or any explanations outside the
 `;
 
   const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+    model: "openai/gpt-oss-20b",
     messages: [
       {
         role: "system",
@@ -318,7 +333,7 @@ const getAIChat = async (prompt, systemInstruction = "You are a professional car
   }
 
   const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+    model: "openai/gpt-oss-20b",
     messages: [
       { role: "system", content: systemInstruction },
       { role: "user", content: prompt },
